@@ -5,7 +5,12 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import sklearn.linear_model as skl
 from sklearn.model_selection import train_test_split
-from sklearn.datasets import fetch_california_housing
+
+"""
+Missing in part a)
+	- scaling
+ 	- splitting in train test data
+"""
 
 sns.set_theme()
 
