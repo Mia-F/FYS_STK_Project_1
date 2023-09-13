@@ -5,12 +5,7 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 import sklearn.linear_model as skl
 from sklearn.model_selection import train_test_split
-
-"""
-Missing in part a)
-	- scaling
- 	- splitting in train test data
-"""
+from sklearn.datasets import fetch_california_housing
 
 sns.set_theme()
 
@@ -27,7 +22,7 @@ def Franke_function(x,y, noise=False):
   term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
   term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
   if noise==True:
-    noise_val = np.random.normal(0, 0.1, len(x)*len(y)) 
+    noise_val = np.random.normal(0, 1, len(x)*len(y)) 
     noise_val = noise_val.reshape(len(x),len(y))
     return term1 + term2 + term3 + term4 + noise_val
   else:
@@ -35,10 +30,10 @@ def Franke_function(x,y, noise=False):
 
 
 def design_matrix(x,y,degree):
-	"""
-	design_matrix create the design matrix for a polynomial of degree n with dimension (len(x)*len(y), degree)
+  """
+  design_matrix create the design matrix for a polynomial of degree n with dimension (len(x)*len(y), degree)
 	
-	:x: is an array containing all the x values it can be a 1D array or a 2D array
+  :x: is an array containing all the x values it can be a 1D array or a 2D array
   :y: is an array containing all the y values it can be a 1D array or a 2D array
   :degree: is the polynomial degree of the fit
   """
@@ -91,53 +86,89 @@ def R2(y_data, y_model):
   """
   return 1 - np.sum((y_data - y_model) ** 2) / np.sum((y_data - np.mean(y_data)) ** 2)
 
+def plotting(x, y , y_model):
+  fig = plt.figure(figsize=(20,8))
+  ax = fig.gca(projection ='3d')
+  surf = ax.plot_surface(x,y,y_model,cmap=cm.twilight, linewidth = 0, antialiased=False)
+  ax.set_zlim(-0.10,1.40)
+  ax.set_xlabel('X-axis', fontsize=30)
+  ax.set_ylabel('Y-axis', fontsize=30)
+  ax.set_zlabel('Z-axis', fontsize=30)
+  ax.zaxis.set_major_locator(LinearLocator(10))
+  ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+  ax.zaxis.labelpad = 12
+  ax.xaxis.labelpad = 25
+  ax.yaxis.labelpad = 20
+  ax.tick_params(axis='x', labelsize=20)
+  ax.tick_params(axis='y', labelsize=20)
+  ax.tick_params(axis='z', labelsize=20)
+  plt.show()
+    
 
 
-n = 40 # amount of data points
-degree = 1 #the degree of the polynomial used in OLS
+if __name__ == "__main__":
+  np.random.seed(2023)
+  n = 100 # amount of data points
+  degree = np.linspace(1,15, 15, dtype=int)
 
-#Create x and y values
-x = np.linspace(0,1, n)
-y = x
-#Create a meshgrid of x and y so we later can plot in 3D
-x,y = np.meshgrid(x,y)
+  #Create x and y values
+  x = np.linspace(0,1, n)
+  y = x
+  #Create a meshgrid of x and y so we later can plot in 3D
+  x,y = np.meshgrid(x,y)
 
-#Compute the Franke function with noise 
-f = Franke_function(x,y, noise= True)
+  #creating arrays to append 
+  mse_error_OLS_train = np.zeros(len(degree))
+  r2_score_train = np.zeros(len(degree))
+  mse_error_OLS_test = np.zeros(len(degree))
+  r2_score_test = np.zeros(len(degree))
 
-#Create the design matrix
-X = design_matrix(x,y,degree)
-#Calculate the beta values
-beta = beta_OLS(X,f)
+  #Compute the Franke function with noise 
+  f = Franke_function(x,y, noise=True)
 
-#Crate the model 
-model = X @ beta_OLS(X,f)
-model = model.reshape(n,n)
+  fig, ax = plt.subplots()
+  for d in degree:
+    #Create the design matrix
+    X = design_matrix(x,y,d)
+    X_train, X_test, y_train, y_test = train_test_split(X, f.flatten(), test_size=0.2)
+    #Calculate the beta values
+    beta = beta_OLS(X_train,y_train)
 
-#calculating the MSE and R2 score
-mse_error_OLS =MSE(f, model)
-r2_score = R2(f, model)
+    #Crate the model 
+    model_train = X_train @ beta
+    model_test = X_test @ beta
 
-print(f"MSE = {mse_error_OLS}")
-print(f"R2 score = {r2_score}")
+    #calculating the MSE and R2 score
+    mse_error_OLS_train[d-1] = MSE(y_train, model_train)
+    r2_score_train[d-1] = R2(y_train, model_train)
 
+    mse_error_OLS_test[d-1] = MSE(y_test, model_test)
+    r2_score_test[d-1] = R2(y_test, model_test)
 
-fig = plt.figure(figsize=(20,8))
-ax = fig.gca(projection ='3d')
-surf = ax.plot_surface(x,y,model,cmap=cm.coolwarm, linewidth = 0, antialiased=False)
-ax.set_zlim(-0.10,1.40)
-ax.set_xlabel('X-axis', fontsize=30)
-ax.set_ylabel('Y-axis', fontsize=30)
-ax.set_zlabel('Z-axis', fontsize=30)
-ax.zaxis.set_major_locator(LinearLocator(10))
-ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-ax.zaxis.labelpad = 12
-ax.xaxis.labelpad = 25
-ax.yaxis.labelpad = 20
-ax.tick_params(axis='x', labelsize=20)
-ax.tick_params(axis='y', labelsize=20)
-ax.tick_params(axis='z', labelsize=20)
-plt.show()
+    if d-1 == 0:
+      ax.scatter(degree[d-1], mse_error_OLS_train[d-1], color="tab:orange", label="MSE training")
+      ax.scatter(degree[d-1], r2_score_train[d-1], color="tab:blue", label="R2 score training")
+
+      ax.scatter(degree[d-1], mse_error_OLS_test[d-1], color="tab:green", label="MSE testing")
+      ax.scatter(degree[d-1], r2_score_test[d-1], color="purple", label="R2 score testing")
+    else:
+      ax.scatter(degree[d-1], mse_error_OLS_train[d-1], color="tab:orange")
+      ax.scatter(degree[d-1], r2_score_train[d-1], color="tab:blue")
+
+      ax.scatter(degree[d-1], mse_error_OLS_test[d-1], color="tab:green")
+      ax.scatter(degree[d-1], r2_score_test[d-1], color="purple")
+        
+  
+  ax.set_title("MSE and R2 scores for fitts with different polynomial degrees")
+  ax.set_xlabel("Degree")
+  ax.set_ylabel("MSE and R2 values")
+  ax.legend() 
+  plt.show()
+
+  fig, ax = plt.subplots()
+  ax.scatter(x[0], (X @ beta)[0:100])
+  ax.plot(x[0], f[0])
+  plt.show()
 
 
 
