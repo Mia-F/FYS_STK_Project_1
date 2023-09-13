@@ -1,1 +1,125 @@
+\documentclass[reprint,english,notitlepage]{revtex4-1}  % 
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{physics,amssymb} 
+\usepackage{graphicx}        
+\usepackage{xcolor}          
+\usepackage{hyperref}        
+\usepackage{tikz}             
+\usepackage{listings}       
+\usepackage{subfigure}  
+\usepackage{here}
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
 
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+
+%% USEFUL LINKS:
+%%
+%%   UiO LaTeX guides:        https://www.mn.uio.no/ifi/tjenester/it/hjelp/latex/ 
+%%   mathematics:             https://en.wikibooks.org/wiki/LaTeX/Mathematics
+
+%%   PHYSICS !                https://mirror.hmc.edu/ctan/macros/latex/contrib/physics/physics.pdf
+
+%%   the basics of Tikz:       https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
+%%   all the colors!:          https://en.wikibooks.org/wiki/LaTeX/Colors
+%%   how to draw tables:       https://en.wikibooks.org/wiki/LaTeX/Tables
+%%   code listing styles:      https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
+%%   \includegraphics          https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics
+%%   learn more about figures  https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions
+%%   automagic bibliography:   https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management  (this one is kinda difficult the first time)
+%%   REVTeX Guide:             http://www.physics.csbsju.edu/370/papers/Journal_Style_Manuals/auguide4-1.pdf
+%%
+%%   (this document is of class "revtex4-1", the REVTeX Guide explains how the class works)
+
+
+%% CREATING THE .pdf FILE USING LINUX IN THE TERMINAL
+%% 
+%% [terminal]$ pdflatex template.tex
+%%
+%% Run the command twice, always.
+%% If you want to use \footnote, you need to run these commands (IN THIS SPECIFIC ORDER)
+%% 
+%% [terminal]$ pdflatex template.tex
+%% [terminal]$ bibtex template
+%% [terminal]$ pdflatex template.tex
+%% [terminal]$ pdflatex template.tex
+%%
+%% Don't ask me why, I don't know.
+
+\begin{document}
+\title{Project 1 FYS-STK4155}   % self-explanatory
+\author{}               % self-explanatory
+\date{\today}                             % self-explanatory
+\noaffiliation   
+
+% ignore this
+\begin{abstract}                          % marks the 
+
+
+\end{abstract}                            % marks the end of the abstract
+\maketitle                                % creates the title, author, date & abstract
+
+
+% the fundamental components of scientific reports:
+\section{Introduction}
+Write a paragraph about why it is useful with machine learning, in this setting.
+
+\input{Introduction}
+\section{Theory}   % (optional)
+\input{Theory}
+
+\section{Method}
+\input{Method}
+
+
+\section{Results}
+\input{Result}
+\section{Discussion}
+\input{Discussion}
+\section{Conclusion}
+\input{conclusion}
+% acknowledgements (optional)
+
+
+
+%% When it comes to the bibliography I personally generate it using BibLaTeX. (see the link above if you're interested)
+%% You're obviously allowed to create the references section however you like.
+%% I'll keep it simple here.
+\section*{References}  % the asterisk (*) after \section makes the section numbering go away
+\begin{itemize}
+\item[-]Reference 1
+\item[-]Reference 2
+\end{itemize}
+
+\newpage
+%% if you want to include an appendix, this is how you do it
+\appendix
+\section{Name of appendix}
+This will be the body of the appendix.
+\section{This is another appendix}\label{appendix}
+
+%% If you want to include figure:
+%\includegraphics[scale=1.0]{filename}
+%% check https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics if you want to know more
+
+\end{document}
