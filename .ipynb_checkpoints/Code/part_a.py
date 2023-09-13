@@ -109,7 +109,7 @@ def plotting(x, y , y_model):
 if __name__ == "__main__":
   np.random.seed(2023)
   n = 100 # amount of data points
-  degree = np.linspace(1,20, 20, dtype=int)
+  degree = np.linspace(1,15, 15, dtype=int)
 
   #Create x and y values
   x = np.linspace(0,1, n)
@@ -118,8 +118,10 @@ if __name__ == "__main__":
   x,y = np.meshgrid(x,y)
 
   #creating arrays to append 
-  mse_error_OLS = np.zeros(len(degree))
-  r2_score = np.zeros(len(degree))
+  mse_error_OLS_train = np.zeros(len(degree))
+  r2_score_train = np.zeros(len(degree))
+  mse_error_OLS_test = np.zeros(len(degree))
+  r2_score_test = np.zeros(len(degree))
 
   #Compute the Franke function with noise 
   f = Franke_function(x,y, noise=True)
@@ -128,29 +130,44 @@ if __name__ == "__main__":
   for d in degree:
     #Create the design matrix
     X = design_matrix(x,y,d)
+    X_train, X_test, y_train, y_test = train_test_split(X, f.flatten(), test_size=0.2)
     #Calculate the beta values
-    beta = beta_OLS(X,f)
+    beta = beta_OLS(X_train,y_train)
 
     #Crate the model 
-    model = X @ beta_OLS(X,f)
-    model = model.reshape(n,n)
+    model_train = X_train @ beta
+    model_test = X_test @ beta
 
     #calculating the MSE and R2 score
-    mse_error_OLS[d-1] = MSE(f, model)
-    print(MSE(f, model))
-    r2_score[d-1] = R2(f, model)
+    mse_error_OLS_train[d-1] = MSE(y_train, model_train)
+    r2_score_train[d-1] = R2(y_train, model_train)
+
+    mse_error_OLS_test[d-1] = MSE(y_test, model_test)
+    r2_score_test[d-1] = R2(y_test, model_test)
 
     if d-1 == 0:
-      ax.scatter(degree[d-1], mse_error_OLS[d-1], color="tab:orange", label="MSE")
-      ax.scatter(degree[d-1], r2_score[d-1], color="tab:blue", label="R2 score")
+      ax.scatter(degree[d-1], mse_error_OLS_train[d-1], color="tab:orange", label="MSE training")
+      ax.scatter(degree[d-1], r2_score_train[d-1], color="tab:blue", label="R2 score training")
+
+      ax.scatter(degree[d-1], mse_error_OLS_test[d-1], color="tab:green", label="MSE testing")
+      ax.scatter(degree[d-1], r2_score_test[d-1], color="purple", label="R2 score testing")
     else:
-      ax.scatter(degree[d-1], mse_error_OLS[d-1], color="tab:orange")
-      ax.scatter(degree[d-1], r2_score[d-1], color="tab:blue")
+      ax.scatter(degree[d-1], mse_error_OLS_train[d-1], color="tab:orange")
+      ax.scatter(degree[d-1], r2_score_train[d-1], color="tab:blue")
+
+      ax.scatter(degree[d-1], mse_error_OLS_test[d-1], color="tab:green")
+      ax.scatter(degree[d-1], r2_score_test[d-1], color="purple")
         
+  
   ax.set_title("MSE and R2 scores for fitts with different polynomial degrees")
   ax.set_xlabel("Degree")
   ax.set_ylabel("MSE and R2 values")
   ax.legend() 
+  plt.show()
+
+  fig, ax = plt.subplots()
+  ax.scatter(x[0], (X @ beta)[0:100])
+  ax.plot(x[0], f[0])
   plt.show()
 
 
