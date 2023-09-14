@@ -169,7 +169,3 @@ if __name__ == "__main__":
   ax.scatter(x[0], (X @ beta)[0:100])
   ax.plot(x[0], f[0])
   plt.show()
-
-
-
-  
