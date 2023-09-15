@@ -1,1 +1,49 @@
 \thispagestyle{plain}
+
+We have assumed that our data can be described by the continous function 
+$f(\boldsymbol{x})$, and an error term $\boldsymbol{\epsilon} ~ N(0, \sigma^{2})$. 
+If we approximate the function with the solution derived from a model $\boldsymbol{\tilde{y}} = X\boldsymbol{\beta}$ the data can be described with $\boldsymbol{y} = X\boldsymbol{\beta} + \boldsymbol{\epsilon}$. 
+The expectation value 
+
+\begin{align*}
+    %\hskip\parindent
+    \mathbb{E}(\boldsymbol{y}) &= \mathbb{E}(X\boldsymbol{\beta} + \boldsymbol{\epsilon}) \\
+    &= \mathbb{E}(X\boldsymbol{\beta}) + \mathbb{E}(\boldsymbol{\epsilon}) && \text{where the expected value $\boldsymbol{\epsilon} = 0$} \\
+    \mathbb{E}(y_{i}) &= \sum_{j=0}^{P-1} X_{i,j} \beta_{j} && \text{for the each element} \\
+    &= X_{i,*} \beta_{i} && \text{where $_{*}$ replace the sum over index $i$} \\
+\end{align*}
+
+
+The variance for the element $y_{i}$ can be found by
+\begin{align*}
+    \mathbb{V}(y_{i}) &= \mathbb{E} \big[ (y_{i} - \mathbb{E}(y_{i}))^{2} \big] \\
+    &= \mathbb{E} (y_{i}^{2}) - (\mathbb{E}(y_{i})^{2}) \\
+    &= \mathbb{E} ((X_{i,*} \beta_{i} + \epsilon_{i})^{2}) - (X_{i,*} \beta_{i})^{2} \\
+    &= \mathbb{E} ((X_{i,*} \beta_{i})^{2} + 2\epsilon_{i}X_{i,*} \beta_{i} + \epsilon^{2}) - (X_{i,*} \beta_{i})^{2} \\
+    &= \mathbb{E} ((X_{i,*} \beta_{i})^{2}) + \mathbb{E} (2\epsilon_{i}X_{i,*} \beta_{i}) + \mathbb{E} (\epsilon^{2}) - (X_{i,*} \beta_{i})^{2} \\
+    &= (X_{i,*} \beta_{i})^{2} + \mathbb{E} (\epsilon^{2}) - (X_{i,*} \beta_{i})^{2} \\
+    &= \mathbb{E} (\epsilon^{2}) = \sigma^{2} \\
+\end{align*}
+
+The expression for the optimal parameter 
+\begin{align*}
+    \boldsymbol{\hat{\beta}} &= (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{y} \\
+\end{align*}
+We find the expected value of $\boldsymbol{\hat{\beta}}$
+\begin{align*}
+    \mathbb{E}(\boldsymbol{\hat{\beta}}) &= \mathbb{E}((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{y}) \\
+    &= (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \mathbb{E}(\boldsymbol{y}) && \text{using that $\boldsymbol{X}$ is a non-stochastic variable} \\
+    &= (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} \boldsymbol{\beta} && \text{using $\mathbb{E}(\boldsymbol{y}) = \boldsymbol{X} \boldsymbol{\beta}$} \\
+    &= \boldsymbol{\beta} \\
+\end{align*}
+we can find the variance by 
+\begin{align*}
+    \mathbb{V}(\boldsymbol{\hat{\beta}}) &= \mathbb{E} \big[ (\boldsymbol{\hat{\beta}} - \mathbb{E}(\boldsymbol{\hat{\beta}}))^{2} \big] \\
+    &= \mathbb{E} (\boldsymbol{\hat{\beta}} \boldsymbol{\hat{\beta}}^{T}) - \mathbb{E}(\boldsymbol{\hat{\beta}})^{2}  \\
+    &= \mathbb{E} (((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{y}) ((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{y})^{T}) - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
+    &= \mathbb{E} ((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{y} \boldsymbol{y}^{T} \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1}) - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
+    &= (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \mathbb{E} (\boldsymbol{y} \boldsymbol{y}^{T}) \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
+    &= (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} (\boldsymbol{X} \boldsymbol{\beta} \boldsymbol{\beta}^{T} \boldsymbol{X}^{T} + \sigma^{2}) \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
+    &= \boldsymbol{\beta} \boldsymbol{\beta}^{T} + \sigma^{2}((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1}) - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
+    &= \sigma^{2}(\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \\
+\end{align*}
