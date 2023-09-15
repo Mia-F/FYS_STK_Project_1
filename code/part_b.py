@@ -11,8 +11,8 @@ def beta_ridge(X, y, lamb):
     return np.linalg.pinv(X.T @ X + lamb * np.identity(len(X[0]))) @ X.T @ y.flatten()
     
 n = 100   
-degree = 7
-lamb = np.linspace(1e-5, 1e1, 1000)
+degree = 20
+lamb = np.linspace(1e-10, 1e-5, 100)
 print(np.log10(lamb))
 
 x = np.linspace(0, 1, n)
