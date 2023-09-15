@@ -112,10 +112,13 @@
 
 \newpage
 %% if you want to include an appendix, this is how you do it
+\clearpage
+\onecolumngrid
 \appendix
-\section{Name of appendix}
-This will be the body of the appendix.
-\section{This is another appendix}\label{appendix}
+\pagenumbering{alph}
+\section{Mean values and variances calculations}
+
+\input{appendix}
 
 %% If you want to include figure:
 %\includegraphics[scale=1.0]{filename}

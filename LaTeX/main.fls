@@ -967,6 +967,13 @@ INPUT ./conclusion.tex
 INPUT ./conclusion.tex
 INPUT conclusion.tex
 INPUT /usr/local/texlive/2023/texmf-var/fonts/map/pdftex/updmap/pdftex.map
+INPUT ./appendix.tex
+INPUT ./appendix.tex
+INPUT ./appendix.tex
+INPUT appendix.tex
+INPUT ./appendix.tex
+INPUT ./appendix.tex
+INPUT appendix.tex
 INPUT ./main.bbl
 INPUT main.bbl
 INPUT ./main.bbl
