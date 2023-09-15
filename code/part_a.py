@@ -30,10 +30,10 @@ def Franke_function(x,y, noise=False):
 
 
 def design_matrix(x,y,degree):
-  """
-  design_matrix create the design matrix for a polynomial of degree n with dimension (len(x)*len(y), degree)
+	"""
+	design_matrix create the design matrix for a polynomial of degree n with dimension (len(x)*len(y), degree)
 	
-  :x: is an array containing all the x values it can be a 1D array or a 2D array
+	:x: is an array containing all the x values it can be a 1D array or a 2D array
   :y: is an array containing all the y values it can be a 1D array or a 2D array
   :degree: is the polynomial degree of the fit
   """
@@ -169,3 +169,7 @@ if __name__ == "__main__":
   ax.scatter(x[0], (X @ beta)[0:100])
   ax.plot(x[0], f[0])
   plt.show()
+
+
+
+  
