@@ -1,9 +1,15 @@
+"""
+Implementing Ridge regression
+"""
+
 import numpy as np
 from part_a import Franke_function, design_matrix, MSE, R2
 import matplotlib.pyplot as plt
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from matplotlib import cm
 from sklearn.model_selection import train_test_split
+import time
+from tqdm import tqdm
 
 np.random.seed(2023)
 
@@ -12,14 +18,13 @@ def beta_ridge(X, y, lamb):
     
 n = 100   
 degree = np.array([1,2,3,4,5,6,7,8,9,10])
-lamb = np.linspace(1e-15, 1e-5, 100)
-print(np.log10(lamb))
+lambdas = np.linspace(1e-15, 1e-5, 100)
 
 x = np.linspace(0, 1, n)
 y = x
 
 x,y = np.meshgrid(x,y)
-f = Franke_function(x,y)#, noise=True)
+f = Franke_function(x,y, noise=True)
 
 #mse_error_Ridge_train = np.zeros(len(lamb))
 #r2_score_Ridge_train = np.zeros(len(lamb))
@@ -31,12 +36,15 @@ mse_error = 1000
 R2_score = 0
 fig, ax = plt.subplots()
 
-for l in lamb:
-    for d in degree:
-        X = design_matrix(x,y, d)
+optimal_lambda = 0
+optimal_degree = 0 
+
+for l in tqdm(range(len(lambdas))):
+    for d in range(len(degree)):
+        X = design_matrix(x,y, degree[d])
         X_train, X_test, y_train, y_test = train_test_split(X, f.flatten(), test_size=0.2) 
     
-        beta = beta_ridge(X_train,y_train, l)
+        beta = beta_ridge(X_train,y_train, lambdas[l])
 
         model_train = X_train @ beta
         model_test = X_test @ beta
@@ -47,8 +55,9 @@ for l in lamb:
         if mse_error_Ridge_train < mse_error:
             mse_error = mse_error_Ridge_train
             R2_score = r2_score_Ridge_train
-            print(l)
-            print(d)
+            optimal_lambda = lambdas[l]
+            optimal_degree = degree[d]
+        time.sleep(0.01)
 
 
         #mse_error_Ridge_test[index] = MSE(y_test, model_test)
@@ -57,6 +66,9 @@ for l in lamb:
    
 print(mse_error)
 print(R2_score)
+
+print(optimal_degree)
+print(optimal_lambda)
 
 
 #ax.plot(np.log10(lamb), mse_error_Ridge_train)
@@ -72,9 +84,9 @@ print(R2_score)
 
 
 #Plotting the model for the best lamda and degree
-X = design_matrix(x,y, 10)
+X = design_matrix(x,y, 9)
 
-beta = beta_ridge(X,f, 10E-10)
+beta = beta_ridge(X,f, 2.5592559263366336e-06)
 
 model = X @ beta
 
