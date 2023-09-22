@@ -47,11 +47,11 @@ def problem_e():
     y_vec = np.linspace(0, 1, n)
     # y = np.exp(-x**2) + 1.5 * np.exp(-(x-2)**2)+ np.random.normal(0, 0.1, x.shape)
     x, y = np.meshgrid(x_vec, y_vec)
-    # franke_noise = Franke_function(x, y, noise=True)
+    franke_noise = Franke_function(x, y, noise=True)
     franke_smooth = Franke_function(x, y, noise=False)
 
     # X = np.column_stack((x.reshape(-1), y.reshape(-1)))
-    F = franke_smooth.reshape(-1, 1)
+    F = franke_noise.reshape(-1, 1)
 
     mse_train = np.zeros(maxdegree)
     mse_test = np.zeros(maxdegree)
@@ -61,7 +61,7 @@ def problem_e():
 
     for degree in range(maxdegree):
         X = design_matrix(x, y, degree)
-        X_train, X_test, y_train, y_test = train_test_split(X, franke_smooth.flatten(), test_size=0.2)
+        X_train, X_test, y_train, y_test = train_test_split(X, F, test_size=0.2)
 
         y_tild = np.empty((y_train.shape[0], n_boostraps))
         y_pred = np.empty((y_test.shape[0], n_boostraps))
@@ -71,11 +71,13 @@ def problem_e():
             beta = beta_OLS(X_,y_)
             y_tilde = X_ @ beta
             y_predict = X_test @ beta
-            y_tild[:, i] = y_tilde
-            y_pred[:, i] = y_predict
-            
-            mse_train[degree] += mean_squared_error(y_, y_tilde)
-            mse_test[degree] += mean_squared_error(y_test, y_predict)
+            y_tild[:, i] = y_tilde.reshape(-1)
+            y_pred[:, i] = y_predict.reshape(-1)
+        y_t = np.mean(y_tild, axis=1)
+        y_p = np.mean(y_pred, axis=1)
+
+        mse_train[degree] = np.mean( np.mean((y_train - y_t)**2))
+        mse_test[degree] = np.mean( np.mean((y_test - y_p)**2))
         bias[degree] = np.mean((y_test - np.mean(y_pred, axis=1, keepdims=True))**2)
         variance[degree] = np.mean(np.var(y_pred, axis=1, keepdims=True))
 
