@@ -1,12 +1,6 @@
 """
 Implementing Lasso regression
 """
-import numpy as np
-import matplotlib.pyplot as plt
-from part_a import Franke_function, design_matrix, MSE, R2
-from sklearn.model_selection import train_test_split
-from sklearn.linear_model import Lasso
-from sklearn.preprocessing import StandardScaler
 
 import numpy as np
 import matplotlib.pyplot as plt
