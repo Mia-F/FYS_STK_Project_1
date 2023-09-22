@@ -45,7 +45,6 @@ def k_fold(data, k):
     return k_fold_indices
 
 # A seed just to ensure that the random numbers are the same for every run.
-# Useful for eventual debugging.
 np.random.seed(3155)
 
 # Generate the data.
@@ -56,11 +55,6 @@ data = np.column_stack((x, y))
 
 k = 5
 k_fold_indices = k_fold(data, k)  # Generate fold indices using k_fold function
-
-## Cross-validation on Ridge regression using KFold only
-
-# Decide degree on polynomial to fit
-poly = PolynomialFeatures(degree=6)
 
 # Decide which values of lambda to use
 nlambdas = 500
