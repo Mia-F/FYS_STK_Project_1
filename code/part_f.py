@@ -45,8 +45,6 @@ def k_fold(data, k):
 
     return k_fold_indices
     
-# A seed just to ensure that the random numbers are the same for every run.
-# Useful for eventual debugging.
 np.random.seed(3155)
 
 # Generate the data.
