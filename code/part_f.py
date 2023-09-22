@@ -21,7 +21,6 @@ def design_matrix(x, y, degree):
 
     return X
 
-
 def k_fold(data, k):
     """
     Perform K-fold cross-validation by splitting the data into K sets.
@@ -44,7 +43,9 @@ def k_fold(data, k):
         k_fold_indices.append((train_indices, test_indices))
 
     return k_fold_indices
-    
+
+# A seed just to ensure that the random numbers are the same for every run.
+# Useful for eventual debugging.
 np.random.seed(3155)
 
 # Generate the data.
@@ -89,26 +90,9 @@ for lmb in lambdas:
 
 estimated_mse_KFold = np.mean(scores_KFold, axis=1)
 
-## Cross-validation using cross_val_score from sklearn along with KFold
+## Plot the results for custom KFold only
 
-estimated_mse_sklearn = np.zeros(nlambdas)
-
-i = 0
-for lmb in lambdas:
-    ridge = Ridge(alpha=lmb)
-
-    X = design_matrix(x, y, degree=6)
-    estimated_mse_folds = cross_val_score(ridge, X, y[:, np.newaxis], scoring='neg_mean_squared_error', cv=kfold)
-
-    # cross_val_score returns an array containing the estimated negative mse for every fold.
-    # get an estimate of the mse of the model
-    estimated_mse_sklearn[i] = np.mean(-estimated_mse_folds)
-
-    i += 1
-
-## Plot
 plt.figure()
-plt.plot(np.log10(lambdas), estimated_mse_sklearn, label='cross_val_score (KFold)')
 plt.plot(np.log10(lambdas), estimated_mse_KFold, 'r--', label='Custom KFold')
 plt.xlabel('log10(lambda)')
 plt.ylabel('mse')

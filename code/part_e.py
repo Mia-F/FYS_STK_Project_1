@@ -101,9 +101,8 @@ def problem_e():
 
 
 
-if __name__ == '__main__':
-    problem_e()
-    plt.show()
+problem_e()
+plt.show()
     # Ensure reproducibility
     # np.random.seed(2023)
     # n = 100
