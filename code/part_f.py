@@ -1,6 +1,3 @@
-"""
-Cross-validation as resampling techniques
-"""
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.model_selection import KFold
