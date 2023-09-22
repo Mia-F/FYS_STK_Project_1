@@ -1,4 +1,11 @@
 \thispagestyle{plain}
+\section{Mean values and variances calculations}
+
+
+The main regression method used in this report is the ordinary least squares method.
+This appensix shows the calculations for some of the equations used to produce the results shiwn in this report.
+
+
 
 We have assumed that our data can be described by the continous function 
 $f(\boldsymbol{x})$, and an error term $\boldsymbol{\epsilon} ~ N(0, \sigma^{2})$. 
@@ -47,3 +54,7 @@ we can find the variance by
     &= \boldsymbol{\beta} \boldsymbol{\beta}^{T} + \sigma^{2}((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1}) - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
     &= \sigma^{2}(\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \\
 \end{align*}
+
+
+\section{Bias-variance trade-off}
+

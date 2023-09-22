@@ -75,6 +75,7 @@
 % ignore this
 \begin{abstract}                          % marks the 
 
+\input{abstract}
 
 \end{abstract}                            % marks the end of the abstract
 \maketitle                                % creates the title, author, date & abstract
@@ -92,7 +93,7 @@
 
 
 \section{Results}
-\input{Results}
+\include{Results}
 \section{Discussion}
 \input{Discussion}
 \section{Conclusion}
@@ -105,20 +106,16 @@
 %% You're obviously allowed to create the references section however you like.
 %% I'll keep it simple here.
 \section*{References}  % the asterisk (*) after \section makes the section numbering go away
-\begin{itemize}
-\item[-]Reference 1
-\item[-]Reference 2
-\end{itemize}
-
+\bibliographystyle{plain}
+\bibliography{citation} 
 \newpage
 %% if you want to include an appendix, this is how you do it
 \clearpage
 \onecolumngrid
 \appendix
 \pagenumbering{alph}
-\section{Mean values and variances calculations}
 
-\input{appendix}
+\include{appendix}
 
 %% If you want to include figure:
 %\includegraphics[scale=1.0]{filename}
