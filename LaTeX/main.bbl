@@ -1,5 +1,10 @@
 \begin{thebibliography}{1}
 
+\bibitem{MLM}
+Jason Brownlee.
+\newblock {A Gentle Introduction to the Bootstrap Method}.
+\newblock \url{https://machinelearningmastery.com/a-gentle-introduction-to-the-bootstrap-method/}, 2019.
+
 \bibitem{PSU}
 Eberly~College of~Science.
 \newblock {Bootstrapping Methods}.
