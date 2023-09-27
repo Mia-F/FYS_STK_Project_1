@@ -42,14 +42,14 @@ def model(lambdas, degree):
 
     
 n = 1000
-degree = np.array([1])
-lambdas = np.linspace(1e-5, 1e5,1000)
+degree = np.array([5])
+lambdas = np.linspace(1e-30, 1e5,1000)
 
 x = np.sort(np.random.uniform(0, 1, n))
 y = np.sort(np.random.uniform(0, 1, n))
 
 #x,y = np.meshgrid(x,y)
-f = Franke_function(x,y,noise=True)
+f = Franke_function(x,y, noise=True)
 
 
 Error_train = np.zeros((len(degree), len(lambdas)))
