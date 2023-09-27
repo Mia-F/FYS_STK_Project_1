@@ -37,7 +37,7 @@ def bootstrap(original_data: np.ndarray, sample_size:int) -> np.ndarray:
 def problem_e():
     np.random.seed(12)
 
-    n = 100
+    n = 20
     n_boostraps = 100
     maxdegree = 16
 
