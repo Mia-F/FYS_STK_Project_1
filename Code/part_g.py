@@ -6,6 +6,7 @@ from matplotlib import cm
 
 # Load the terrain
 terrain1 = imread('SRTM_data_Norway_1.tif')
+print(terrain1)
 # Show the terrain
 plt.figure()
 plt.title('Terrain over Norway 1')

@@ -8,6 +8,7 @@ from part_a import Franke_function, design_matrix, MSE, R2
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Lasso
 from sklearn.preprocessing import StandardScaler
+from tqdm import tqdm
 
 np.random.seed(2023)
 n = 100  
@@ -17,7 +18,7 @@ x = np.linspace(0, 1, n)
 y = x
 x, y = np.meshgrid(x, y)
 
-f = Franke_function(x, y, noise = False)
+f = Franke_function(x, y, noise = True)
 
 # Define the values of lambda (alpha) for Lasso regression
 alphas = np.logspace(-4, 4, 100)
@@ -31,7 +32,7 @@ r2_score_Lasso_test = np.zeros(len(alphas))
 scaler = StandardScaler()
 f_scaled = scaler.fit_transform(f)
 
-for i, alpha in enumerate(alphas):
+for i, alpha in tqdm(enumerate(alphas)):
     for d in degree:
         X = design_matrix(x, y, d)
         X_train, X_test, y_train, y_test = train_test_split(X, f.flatten(), test_size=0.2)
