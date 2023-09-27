@@ -1,9 +1,40 @@
 \thispagestyle{plain}
 
 \subsection{Regression methods}
+\noindent While numerous regression methods exist, in this particular context, 
+we will narrow our focus to three fundamental techniques, Ordinary Least Squares, Ridge and Lasso Regression."
 \subsubsection{Ordinary least squares (OLS)}
+\noindent Ordinary Least Squares (OLS) stands as a fundamental technique in regression
+analysis, where the aim is to create a model that minimize the diffrense from
+the observed data and the predicted model. 
+
+%OLS is a linear model which means that it assumes that the regression function 
+%is linear in the inputs $X_1, X_2 \dots X_n$
+
+A linear regression model has the following form :
+\begin{align}
+    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i \cite{hastie_09_elements-of.statistical-learning}
+\end{align}
+Where $\beta$ is the coefficients and X the design matrix. It is importent to note 
+that thise method assume that either the function is linear or approxematly linear.
+
+ 
+The cost function for OLS is given by:
+\begin{equation}
+    C(\beta) = \frac{1}{n} = \left\lbrace ( \textbf{y} - \textbf{X}\beta  )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace
+\end{equation}
+From this we obtein that the expression for the optimal $\beta$ is given by:
+\begin{equation}
+    \beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y}
+\end{equation}
 \subsubsection{Ridge}
+\begin{equation}
+    \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y}
+\end{equation}
+
+Calculations for bothe the optimal $\beta$ and variance can be found in the apendix
 \subsubsection{LASSO}
+
 \subsection{MSE}
 
 

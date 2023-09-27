@@ -5,6 +5,11 @@ Jason Brownlee.
 \newblock {A Gentle Introduction to the Bootstrap Method}.
 \newblock \url{https://machinelearningmastery.com/a-gentle-introduction-to-the-bootstrap-method/}, 2019.
 
+\bibitem{hastie_09_elements-of.statistical-learning}
+Trevor Hastie, Robert Tibshirani, and Jerome Friedman.
+\newblock {\em The elements of statistical learning: data mining, inference and prediction}.
+\newblock Springer, 2 edition, 2009.
+
 \bibitem{PSU}
 Eberly~College of~Science.
 \newblock {Bootstrapping Methods}.
