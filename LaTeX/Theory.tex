@@ -1,8 +1,19 @@
 \thispagestyle{plain}
 
-\subsection{Regression methods}
-\noindent While numerous regression methods exist, in this particular context, 
-we will narrow our focus to three fundamental techniques, Ordinary Least Squares, Ridge and Lasso Regression."
+\subsection{Linear regression methods}
+
+\noindent Linear regression is a foundational statistical modeling technique employed for the prediction of continuous target variables based on one or more input features. It operates under the assumption that there exists a linear relationship between the input features and the target variable, which is mathematically expressed as:
+
+\[
+\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p
+\]
+
+In this equation, $\hat{y}$ denotes the predicted target variable, while $x_1, x_2, \ldots, x_p$ represent the input features. The coefficients $\beta_0, \beta_1, \beta_2, \ldots, \beta_p$ are parameters that correspond to each respective feature. The primary objective of linear regression is to determine these coefficients to establish the optimal linear model that best fits the given data.
+
+Linear regression encompasses several variants, each offering unique characteristics and advantages. In this particular context, 
+we will narrow our focus to three fundamental techniques, Ordinary Least Squares (OLS), Ridge regression, and Lasso regression. These techniques will be employed in the context of analyzing the two-dimensional Franke function. 
+
+
 \subsubsection{Ordinary least squares (OLS)}
 \noindent Ordinary Least Squares (OLS) stands as a fundamental technique in regression
 analysis, where the aim is to create a model that minimize the diffrense from
