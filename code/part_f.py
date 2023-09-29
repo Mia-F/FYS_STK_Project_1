@@ -1,9 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.model_selection import KFold
 from sklearn.linear_model import Ridge
-from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import PolynomialFeatures
 
 def design_matrix(x, y, degree):
     if len(x.shape) > 1:
@@ -22,12 +19,6 @@ def design_matrix(x, y, degree):
     return X
 
 def k_fold(data, k):
-    """
-    Perform K-fold cross-validation by splitting the data into K sets.
-    Returns:
-    List of tuples: Each tuple contains (train_indices, test_indices) for a fold.
-    """
-
     n_samples = len(data)
     fold_size = n_samples // k
     indices = np.arange(n_samples)
@@ -49,45 +40,48 @@ np.random.seed(3155)
 
 # Generate the data.
 nsamples = 100
-x = np.random.randn(nsamples)
+x = np.random.rand(nsamples)
 y = 3 * x**2 + np.random.randn(nsamples)
 data = np.column_stack((x, y))
-
-k = 5
-k_fold_indices = k_fold(data, k)  # Generate fold indices using k_fold function
 
 # Decide which values of lambda to use
 nlambdas = 500
 lambdas = np.logspace(-3, 5, nlambdas)
 
-# Perform the cross-validation to estimate MSE using KFold
-scores_KFold = np.zeros((nlambdas, k))
-
-i = 0
-for lmb in lambdas:
-    ridge = Ridge(alpha=lmb)
-    j = 0
-    for train_indices, test_indices in k_fold_indices:
-        xtrain, ytrain = data[train_indices, 0], data[train_indices, 1]
-        xtest, ytest = data[test_indices, 0], data[test_indices, 1]
-
-        Xtrain = design_matrix(xtrain, ytrain, degree=6)
-        ridge.fit(Xtrain, ytrain[:, np.newaxis])
-
-        Xtest = design_matrix(xtest, ytest, degree=6)
-        ypred = ridge.predict(Xtest)
-
-        scores_KFold[i, j] = np.sum((ypred - ytest[:, np.newaxis])**2) / np.size(ypred)
-
-        j += 1
-    i += 1
-
-estimated_mse_KFold = np.mean(scores_KFold, axis=1)
-
-## Plot the results for custom KFold only
+colors = ['b', 'g', 'r', 'c', 'm', 'y']
 
 plt.figure()
-plt.plot(np.log10(lambdas), estimated_mse_KFold, 'r--', label='Custom KFold')
+
+for idx, k in enumerate(range(5, 11)):
+    k_fold_indices = k_fold(data, k)  # Generate fold indices using k_fold function
+
+    # Perform the cross-validation to estimate MSE using KFold
+    scores_KFold = np.zeros((nlambdas, k))
+
+    i = 0
+    for lmb in lambdas:
+        ridge = Ridge(alpha=lmb)
+        j = 0
+        for train_indices, test_indices in k_fold_indices:
+            xtrain, ytrain = data[train_indices, 0], data[train_indices, 1]
+            xtest, ytest = data[test_indices, 0], data[test_indices, 1]
+
+            Xtrain = design_matrix(xtrain, ytrain, degree=6)
+            ridge.fit(Xtrain, ytrain[:, np.newaxis])
+
+            Xtest = design_matrix(xtest, ytest, degree=6)
+            ypred = ridge.predict(Xtest)
+
+            scores_KFold[i, j] = np.sum((ypred - ytest[:, np.newaxis])**2) / np.size(ypred)
+
+            j += 1
+        i += 1
+
+    estimated_mse_KFold = np.mean(scores_KFold, axis=1)
+
+    ## Plot the results for custom KFold
+    plt.plot(np.log10(lambdas), estimated_mse_KFold, color=colors[idx], label=f'k = {k}')
+
 plt.xlabel('log10(lambda)')
 plt.ylabel('mse')
 plt.legend()
