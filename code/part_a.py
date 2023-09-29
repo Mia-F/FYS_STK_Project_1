@@ -116,7 +116,7 @@ def plotting(x, y , y_model):
 if __name__ == "__main__":
   np.random.seed(2023)
   n = 100 # amount of data points
-  degree = np.linspace(5,5, 1, dtype=int)
+  degree = np.linspace(0,5, 6, dtype=int)
 
   #Create x and y values
   x = np.sort(np.random.uniform(0, 1, n))
@@ -159,7 +159,7 @@ if __name__ == "__main__":
     Error_test[i] = MSE(y_test, model_test)
     Score_test[i] = R2(y_test, model_test)
 
-    beta_val[i] = np.mean(beta, axis= 1)
+    #beta_val[i] = np.mean(beta, axis= 1)
     
     #calculating with scikitlearn
     model = make_pipeline(PolynomialFeatures(degree=degree[i]), LinearRegression(fit_intercept=False))
@@ -175,6 +175,12 @@ if __name__ == "__main__":
     Score_test_scitlearn[i] = R2(y_test, y_pred)
 
 
+  plt.plot(degree, Error_train, label="Train")
+  plt.plot(degree, Error_test, label="Test")
+  plt.ylabel("MSE")
+  plt.xlabel("Degree")
+  plt.legend()
+  plt.show()
 
   plt.subplot(2,1,1)   
   plt.title("MSE and R2 score as a function of model complexity")     
@@ -202,6 +208,7 @@ if __name__ == "__main__":
   plt.legend()
   plt.show()
 
+  """
   variance = np.zeros(len(degree))
   #Analysing coefficent
   index = 0
@@ -215,8 +222,9 @@ if __name__ == "__main__":
   for i in range(len(degree)):
       variance[i] = np.var(beta_val[i])
       print(beta_val[i])
-      for j in range(len(beta_val[i])):
-        plt.errorbar(index, beta_val[i][j], yerr=variance[i], fmt="b.", color=colors[i])
+      for j in range(len(beta_val[i]) ):
+        plt.errorbar(index, np.log10(beta_val[i][j]), yerr=variance[i], fmt="b.", color=colors[i])
         index += 1
 
   plt.show()
+  """
