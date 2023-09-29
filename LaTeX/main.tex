@@ -9,6 +9,7 @@
 \usepackage{listings}       
 \usepackage{subfigure}  
 \usepackage{here}
+\usepackage{fontawesome}
 \hypersetup{ % this is just my personal choice, feel free to change things
     colorlinks,
     linkcolor={red!50!black},
@@ -68,7 +69,7 @@
 
 \begin{document}
 \title{Project 1 FYS-STK4155}   % self-explanatory
-\author{Mia Synnøve Frivik, Andrea Myrvang, Max Jan Willem Schuringa, Janita Ovidie Sandtrøen Willumsen}               % self-explanatory
+\author{Mia Synnøve Frivik, Andrea Myrvang, Max Jan Willem Schuringa, Janita Ovidie Sandtrøen Willumsen \\ \faGithub \, \url{https://github.com/Mia-F/FYS_STK_Project_1.git}}        
 \date{\today}                             % self-explanatory
 \noaffiliation   
 
@@ -105,13 +106,14 @@
 %% When it comes to the bibliography I personally generate it using BibLaTeX. (see the link above if you're interested)
 %% You're obviously allowed to create the references section however you like.
 %% I'll keep it simple here.
-\section*{References}  % the asterisk (*) after \section makes the section numbering go away
-\bibliographystyle{plain}
-\bibliography{citation} 
 \newpage
 %% if you want to include an appendix, this is how you do it
 \clearpage
 \onecolumngrid
+\section*{References}  % the asterisk (*) after \section makes the section numbering go away
+\bibliographystyle{plain}
+\bibliography{citation} 
+
 \appendix
 \pagenumbering{alph}
 
