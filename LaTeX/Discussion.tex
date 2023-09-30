@@ -1,1 +1,13 @@
 \thispagestyle{plain}
+
+\noindent From figure \eqref{MSE and R2 OLS} we see that when our data set does not include noise
+the MSE for the training data gets lower with increas in complexity, while 
+the R2 score gets closer and closer to 1. But when we introduce noise whe see from figure \eqref{MSE and R2 OLS noise}
+that for our test data the MSE acctually increase with higher complexity. 
+
+The dataset containing the test data consists of $20\%$ of the original
+dataset. This implies that the number of points in the test data is 
+significantly smaller than that in the training data. We anticipate 
+that by increasing the number of data points, the MSE for the model 
+created using the test data will converge towards that of the training
+model.
