@@ -109,10 +109,9 @@ For \(k=5\), an example partition might be:
     \text{Fold 5} &= \{d_{4 \times \frac{n}{5}+1}, d_{4 \times \frac{n}{5}+2}, \dots, d_n\}
 \end{align}
 In each iteration, one of these folds is reserved for testing and the others for training, cycling through until each fold has been the test set once. The model's performance is then averaged over the \(k\) test sets to produce a single estimation.
-The main advantage of CV is its ability to utilize the entire dataset for both training and testing, which can be crucial when data is limited. By averaging over multiple trials, CV reduces the variance associated with a single random train-test split, providing a more robust measure of model performance.
+The advantage of CV is its ability to utilize the entire dataset for both training and testing, which can be very helpfull when data is limited. By averaging over multiple trials, CV reduces the variance associated with a single random train-test split, providing a more robust measure of model performance.
 However, CV can be computationally intensive, especially for large \(k\) values or large datasets. Also, unlike the bootstrap method where test data is entirely separate from training, there's an overlap in the training data across folds in CV. This means that CV may sometimes be overly optimistic about a model's performance.
-For datasets where the distribution of target outcomes or classes is imbalanced, a variant called stratified k-fold CV can be used, ensuring that each fold has roughly the same proportion of outcomes or classes as the entire dataset.
-In the context of our study, CV aids in parameter tuning, especially for models like Ridge and LASSO where the regularization strength is crucial. By leveraging CV, we can pinpoint the model settings that generalize best to unseen data, providing invaluable insights into topographical data analysis.
+In the context of our study, CV aids in parameter tuning, especially for models like Ridge and LASSO where the regularization strength is crucial.
 
 
 
