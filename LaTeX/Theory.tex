@@ -94,8 +94,22 @@ how god the model represent real data.
 
 
 \subsubsection{Cross validation}
-\noindent Cross validation is another method of creating "new" datasets from the original data. This method 
-wrks by splitting the data in k-folds
+\noindent Cross validation (CV), specifically k-fold cross validation, is a technique designed to assess how well a model will generalize to an independent dataset. Unlike the bootstrap method, which samples with replacement, CV partitions the original dataset into \(k\) distinct subsets or "folds". One of these folds is kept as the test set, while the remaining \(k-1\) folds are used for training the model. This process is repeated \(k\) times, each time with a different fold reserved as the test set and the remaining folds as the training set. Given a dataset \(D\) with \(n\) data points represented as:
+\begin{align}
+    D = \{d_1, d_2, d_3, \dots, d_n\}
+\end{align}
+For \(k=5\), an example partition might be:
+\begin{align}
+    \text{Fold 1} &= \{d_1, d_2, \dots, d_{\frac{n}{5}}\} \\
+    \text{Fold 2} &= \{d_{\frac{n}{5}+1}, d_{\frac{n}{5}+2}, \dots, d_{2 \times \frac{n}{5}}\} \\
+    &\vdots \\
+    \text{Fold 5} &= \{d_{4 \times \frac{n}{5}+1}, d_{4 \times \frac{n}{5}+2}, \dots, d_n\}
+\end{align}
+In each iteration, one of these folds is reserved for testing and the others for training, cycling through until each fold has been the test set once. The model's performance is then averaged over the \(k\) test sets to produce a single estimation.
+The advantage of CV is its ability to utilize the entire dataset for both training and testing, which can be very helpfull when data is limited. By averaging over multiple trials, CV reduces the variance associated with a single random train-test split, providing a more robust measure of model performance.
+However, CV can be computationally intensive, especially for large \(k\) values or large datasets. Also, unlike the bootstrap method where test data is entirely separate from training, there's an overlap in the training data across folds in CV. This means that CV may sometimes be overly optimistic about a model's performance.
+In the context of our study, CV aids in parameter tuning, especially for models like Ridge and LASSO where the regularization strength is crucial.
+
 
 
 
