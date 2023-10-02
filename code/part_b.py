@@ -42,7 +42,7 @@ def model(lambdas, degree):
 
     
 n = 10000
-degree = np.array([5])
+degree = np.array([7])
 lambdas = np.linspace(1e-5, 1e5,1000)
 
 x = np.sort(np.random.uniform(0, 1, n))

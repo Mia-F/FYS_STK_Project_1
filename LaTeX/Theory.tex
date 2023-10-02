@@ -20,7 +20,7 @@ techniques will be employed in the context of analyzing the two-dimensional Fran
 
 A linear regression model has the following form :
 \begin{align}
-    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i %\cite{hastie_09_elements-of.statistical-learning} \label{linear model}
+    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i \label{linear model} %\cite{hastie_09_elements-of.statistical-learning} 
 \end{align}
 
 Where $\beta$ is the coefficients and X the design matrix. It is importent to note 
@@ -28,18 +28,45 @@ that thise method assume that either the function is linear or approxematly line
 
 
 \subsubsection{Ordinary least squares (OLS)}
-\noindent Ordinary Least Squares (OLS) stands as a fundamental technique in regression
-analysis, where the aim is to create a model that minimize the diffrense from
-the observed data and the predicted model. This is done by estimating the coefficent in a 
-linear regression model given in equation %\eqref{linear model} and minimizing the MSE \cite{AY}.
-The cost function for OLS is given by:
+\noindent Ordinary Least Squares (OLS) stands as a fundamental technique in 
+regression analysis, with the primary objective of creating a model that 
+minimizes the discrepancy between observed data and the predicted model. 
+This is achieved by estimating the coefficients in a linear regression model, 
+as defined in Equation \eqref{linear model}, while minimizing the Mean Squared 
+Error (MSE) \cite{AY}. To minimize the MSE, we calculate the optimal $\beta$ values. This involves 
+taking the derivative of the cost function, as shown in Equation \eqref{cost_function}, 
+and setting it to zero.
+
 \begin{equation}
-    C(\beta) = \frac{1}{n} = \left\lbrace ( \textbf{y} - \textbf{X}\beta  )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace
+C(\beta) = \frac{1}{n} \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace \label{cost_function}
 \end{equation}
-From this we obtein that the expression for the optimal $\beta$ is given by:
+
+\noindent By solving $\frac{\partial C(\beta)}{\partial \beta} = 0$, we determine that 
+for OLS, the optimal $\beta$ values can be obtained by solving Equation
+\eqref{optimal beta OLS}.
+
 \begin{equation}
-    \beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y}
+\beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y} \label{optimal beta OLS}
 \end{equation}
+
+\noindent Additionally, OLS possesses other properties that are relevant to this project,
+such as the expectation value and variance. These properties come into play 
+when applying the bias-variance trade-off to evaluate our models, and they can 
+be expressed as follows:
+\begin{align}
+&\mathbb{E}_{OLS}(y_i) = \textbf{X}{i,*} \beta\\
+&\mathbb{E}_{OLS}(\beta) = \beta\\
+&\mathbb{V}_{OLS}(y_i) = \sigma^2\\
+&\mathbb{V}_{OLS}(\hat{\beta}) = \sigma^2 (\textbf{X}^T \textbf{X})^{-1}
+\end{align}
+\noindent For a comprehensive step-by-step derivation of these expressions, please refer
+to Appendix A.
+%\begin{align}
+%    \mathbb{E_{OLS}}(\textbf{y_i}) = \sum_{j=0}^{P-1} X_{i,j}\beta_j = \textbf{X}_{i,*}\beta
+%\end{align}
+
+
+
 \subsubsection{Ridge}
 \begin{equation}
     \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y}
