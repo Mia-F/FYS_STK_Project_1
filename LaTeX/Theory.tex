@@ -60,14 +60,37 @@ be expressed as follows:
 &\mathbb{V}_{OLS}(\hat{\beta}) = \sigma^2 (\textbf{X}^T \textbf{X})^{-1}
 \end{align}
 \noindent For a comprehensive step-by-step derivation of these expressions, please refer
-to Appendix A.
-%\begin{align}
-%    \mathbb{E_{OLS}}(\textbf{y_i}) = \sum_{j=0}^{P-1} X_{i,j}\beta_j = \textbf{X}_{i,*}\beta
-%\end{align}
+to Appendix A. OLS, as a regression method, relies on specific assumptions 
+about the data it is applied to. If these assumptions are not met by the 
+dataset, the model's accuracy may be compromised. 
+%The assumsions are %\cite{SBJ}:
+%\begin{itemize}
+%    \item The regression model is linear in the coefficients and the error term\\
+%    \item The error term has a population mean of zero\\
+%    \item All independent variables are uncorrelated with the error term\\
+%    \item Observations of the error term are uncorrelated with each other\\
+%    \item The error term has a constant variance\\
+%    \item No independent variable is a perfect linear function of other explanatory variables\\
+%\end{itemize}
+\newline \newline
+\textbf{Write about positiv and negativ things about OLS}
+\newline \newline
 
+\noindent While OLS is a straightforward and efficient linear regression method 
+to implement, its limitations become particularly evident when dealing 
+with datasets that contain substantial amounts of noise. In response to the 
+limitations of OLS in noisy datasets, two other linear regression methods have been
+developed namly Ridge and LASSO regression. 
 
 
 \subsubsection{Ridge}
+\noindent Ridge regression closely resembles OLS, with the addition of a term in the 
+cost function, as depicted in the equation \eqref{cost_function Ridge}.
+\begin{equation}
+    C(X,\beta) =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda \beta^T \beta \label{cost_function Ridge}
+\end{equation}
+When the derivative of the cost funcion with respect to $\beta$ is put to zero, the
+term for the optimal $\beta$ becomes:
 \begin{equation}
     \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y}
 \end{equation}
