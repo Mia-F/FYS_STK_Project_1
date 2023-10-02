@@ -29,21 +29,34 @@ the observed data and the predicted model.
 
 A linear regression model has the following form :
 \begin{align}
-    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i \cite{hastie_09_elements-of.statistical-learning}
+    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i \label{linear model} %\cite{hastie_09_elements-of.statistical-learning} 
 \end{align}
+
 Where $\beta$ is the coefficients and X the design matrix. It is importent to note 
 that thise method assume that either the function is linear or approxematly linear.
 
- 
-The cost function for OLS is given by:
+
+\subsubsection{Ordinary least squares (OLS)}
+\noindent Ordinary Least Squares (OLS) stands as a fundamental technique in 
+regression analysis, with the primary objective of creating a model that 
+minimizes the discrepancy between observed data and the predicted model. 
+This is achieved by estimating the coefficients in a linear regression model, 
+as defined in Equation \eqref{linear model}, while minimizing the Mean Squared 
+Error (MSE) \cite{AY}. To minimize the MSE, we calculate the optimal $\beta$ values. This involves 
+taking the derivative of the cost function, as shown in Equation \eqref{cost_function}, 
+and setting it to zero.
+
 \begin{equation}
-    C(\beta) = \frac{1}{n} = \left\lbrace ( \textbf{y} - \textbf{X}\beta  )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace
+C(\beta) = \frac{1}{n} \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace \label{cost_function}
 \end{equation}
-From this we obtein that the expression for the optimal $\beta$ is given by:
+
+\noindent By solving $\frac{\partial C(\beta)}{\partial \beta} = 0$, we determine that 
+for OLS, the optimal $\beta$ values can be obtained by solving Equation
+\eqref{optimal beta OLS}.
+
 \begin{equation}
-    \beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y}
+\beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y} \label{optimal beta OLS}
 \end{equation}
-<<<<<<< HEAD
 
 \noindent Additionally, OLS possesses other properties that are relevant to this project,
 such as the expectation value and variance. These properties come into play 
@@ -79,8 +92,6 @@ limitations of OLS in noisy datasets, two other linear regression methods have b
 developed namly Ridge and LASSO regression. 
 
 
-=======
->>>>>>> 3d7d47c28f7e363f7ad81dbac1c630f30ebe87fe
 \subsubsection{Ridge}
 \noindent Ridge regression closely resembles OLS, with the addition of a term in the 
 cost function, as depicted in the equation \eqref{cost_function Ridge}.
@@ -92,6 +103,7 @@ term for the optimal $\beta$ becomes:
 \begin{equation}
     \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y}
 \end{equation}
+
 
 Calculations for bothe the optimal $\beta$ and variance can be found in the apendix
 \subsubsection{LASSO}
@@ -111,7 +123,7 @@ we are going to use two different methods, the first is called bootstrap and the
 \subsubsection{Bootstrap} 
 \noindent The bootstrap method is a resampling procedure that uses data from one 
 sample to generate a sampling distribution by repeatedly taking random 
-samples from the known sample, with replacement\cite{PSU} This means that if we have a data set D with n data points.
+samples from the known sample, with replacement %\cite{PSU} This means that if we have a data set D with n data points.
 The elements in this data set can be representatet in the following way:
 \begin{align}
     D = {d_1, d_2, d_3, d_4, \dots, d_n}
@@ -128,7 +140,7 @@ the dataset and take the mean of all thise values:
 \end{align}
 This gives us a method of producing lots of "new" data-set from 
 limited data points to train our model with. For each of this data-sets
-the mean and standard deviation can be calculated to evaluate the model statistically. \cite{MLM}
+the mean and standard deviation can be calculated to evaluate the model statistically. %\cite{MLM}
 
 
 One huge advatage of using the boostrap method is that the data can be split in to 
@@ -162,4 +174,5 @@ In the context of our study, CV aids in parameter tuning, especially for models 
 
 
 \subsection{Bias-variance trade-off}
-The Bias-varinace trade-off is a measuerment on how accuratly a model fit the real data. The bias-variance trade-off remains central in understanding model performance, striking a balance between two sources of errors that impact generalization. High bias suggests an oversimplification of the model, misrepresenting underlying patterns, while high variance indicates an overfitting, capturing noise as if it were a genuine pattern. Essentially, a model with low bias confidently navigates through the data but risks being misled by its own confidence, introducing possible overfitting. Conversely, a high-bias model may underperform due to its underfitting, missing critical data tendencies.
+The Bias-varinace trade-off is a measuerment on how accuratly a model fit the real data.
+
