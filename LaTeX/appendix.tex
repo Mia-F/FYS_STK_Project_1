@@ -3,10 +3,8 @@
 
 
 The main regression method used in this report is the ordinary least squares method.
-This appensix shows the calculations for some of the equations used to produce the results shiwn in this report.
-
-
-
+This appensix shows the calculations for some of the equations used to produce the results shown in this report.
+%
 We have assumed that our data can be described by the continous function 
 $f(\boldsymbol{x})$, and an error term $\boldsymbol{\epsilon} ~ N(0, \sigma^{2})$. 
 If we approximate the function with the solution derived from a model $\boldsymbol{\tilde{y}} = X\boldsymbol{\beta}$ the data can be described with $\boldsymbol{y} = X\boldsymbol{\beta} + \boldsymbol{\epsilon}$. 
@@ -53,6 +51,28 @@ we can find the variance by
     &= (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} (\boldsymbol{X} \boldsymbol{\beta} \boldsymbol{\beta}^{T} \boldsymbol{X}^{T} + \sigma^{2}) \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1} - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
     &= \boldsymbol{\beta} \boldsymbol{\beta}^{T} + \sigma^{2}((\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} (\boldsymbol{X}^{T} \boldsymbol{X})^{-1}) - \boldsymbol{\hat{\beta}}\boldsymbol{\hat{\beta}}^{T}  \\
     &= \sigma^{2}(\boldsymbol{X}^{T} \boldsymbol{X})^{-1} \\
+\end{align*}
+Knowing the expectation value and the variance of $\boldsymbol{\hat{\beta}}$, we can define a confidence intervall for each $\hat{\beta}_{j} \pm std(\hat{\beta}_j)$ for $j=1, 2, \hdots, P-1$.
+
+The optimal $\boldsymbol{\hat{\beta}}^{Ridge}$ can be derived from MSE, and is defined as 
+\begin{align*}
+    \boldsymbol{\hat{\beta}}^{Ridge} &= (\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{y} \\
+\end{align*}
+The expectation value is then 
+\begin{align*}
+    \mathbb{E} (\boldsymbol{\hat{\beta}}^{Ridge}) &= \mathbb{E}((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{y}) \\
+    &= (\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \mathbb{E}( \boldsymbol{y} ) && \text{since $\boldsymbol{X}$ and $\lambda \boldsymbol{I}$ are non-stochastic variables} \\
+    &= (\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} \boldsymbol{\beta} && \text{using $\mathbb{E} (\boldsymbol{y})$ from exercise 1} \\
+\end{align*}
+For $\lambda = 0$ we have $\mathbb{E} (\boldsymbol{\hat{\beta}}^{OLS})$. The variance 
+\begin{align*}
+    \mathbb{V}(\boldsymbol{\hat{\beta}}^{Ridge}) &= \mathbb{E} (\boldsymbol{\hat{\beta}}_{R} \boldsymbol{\hat{\beta}}_{R}^{T}) - (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} \\
+    &= \mathbb{E} (((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{y}) (((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{y}))^{T}) - (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} \\
+    &= \mathbb{E} ((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{y} \boldsymbol{y}^{T} \boldsymbol{X} ((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1})^{T} ) - (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} \\
+    &= (\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \mathbb{E} (\boldsymbol{y} \boldsymbol{y}^{T} ) \boldsymbol{X} ((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1})^{T} - (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} \\
+    &= (\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} (\boldsymbol{X} \boldsymbol{\beta} \boldsymbol{\beta}^{T} \boldsymbol{X}^{T} + \sigma^{2}) \boldsymbol{X} ((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1})^{T} - (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} \\
+    &= \sigma^{2}(\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} ((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1})^{T} + (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} - (\mathbb{E} (\boldsymbol{\hat{\beta}}_{R}))^{2} \\
+    &= \sigma^{2}(\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1} \boldsymbol{X}^{T} \boldsymbol{X} ((\boldsymbol{X}^{T}\boldsymbol{X} + \lambda \boldsymbol{I})^{-1})^{T} \\
 \end{align*}
 
 
