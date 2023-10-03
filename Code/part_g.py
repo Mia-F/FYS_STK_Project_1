@@ -26,7 +26,7 @@ def creating_data(data_file, n):
 
 # Load the terrain
 
-n = 500
+n = 100
 degree = np.array([0, 10, 20, 30, 40, 50])
 data_file = 'SRTM_data_Norway_1.tif'
 
@@ -59,35 +59,70 @@ for d in tqdm(range(len(degree))):
 #Crate the model 
     model[d][:] = X @ beta
 
-fig = plt.figure()
+#fig = plt.figure()
 
-fig.suptitle("Models for the terrain data fitted with OLS of different complexities", fontsize = 20)
+#fig.suptitle("Models for the terrain data fitted with OLS of different complexities", fontsize = 20)
 
 for i in range(len(degree)):
     if i == 0:
-        ax = fig.add_subplot(2, len(degree)/2, i+1, projection='3d')
-        ax.plot_surface(x, y, data, cmap=cm.twilight,linewidth=0, antialiased=False)
-        ax.set_title(f"Terrain data", fontsize = 20)
+        print("noe")
+       # ax = fig.add_subplot(2, len(degree)/2, i+1, projection='3d')
+       # ax.plot_surface(x, y, data, cmap=cm.twilight,linewidth=0, antialiased=False)
+       # ax.set_title(f"Terrain data", fontsize = 20)
     else:
         mod = model[i][:].reshape(n,n)
         print(np.shape(mod))
         #For ploting 
-        ax = fig.add_subplot(2, len(degree)/2, i+1, projection='3d')
-        ax.plot_surface(x, y, mod, cmap=cm.twilight,linewidth=0, antialiased=False)
-        ax.set_title(f"Degree = {degree[i]}", fontsize = 20)
+        #ax = fig.add_subplot(2, len(degree)/2, i+1, projection='3d')
+        #ax.plot_surface(x, y, mod, cmap=cm.twilight,linewidth=0, antialiased=False)
+       # ax.set_title(f"Degree = {degree[i]}", fontsize = 20)
 
+#plt.show()
+
+
+#plt.suptitle("2D plot of the terrain data fitted with OLS of different complexities")
+for i in range(len(degree)):
+    #plt.subplot(2,3,i+1)
+    if i==0:
+        print("noe")
+        #plt.title("Real data", fontsize = 20)
+        #plt.imshow(data, cmap=cm.twilight)
+    else:
+        mod = model[i][:].reshape(n,n)
+        #plt.title(f"Degree {degree[i]}", fontsize = 20)
+        #plt.imshow(mod, cmap=cm.twilight)
+    
+#plt.show()
+
+
+lambdas = np.logspace(-10, 10, 100)
+degree = 50
+
+def beta_ridge(X, y, lamb):
+    return (np.linalg.pinv(X.T @ X + lamb * np.identity(len(X[0]))) @ X.T @ y)
+
+mse = np.zeros(len(lambdas))
+X = design_matrix(x_1D,y_1D, degree)
+for i in tqdm(range(len(lambdas))):
+    beta = beta_ridge(X, z, lambdas[i])
+
+    model= X @ beta
+    mse[i] = MSE(z, model)
+
+plt.semilogx(lambdas, mse)
 plt.show()
 
 
-plt.suptitle("2D plot of the terrain data fitted with OLS of different complexities")
-for i in range(len(degree)):
-    plt.subplot(2,3,i+1)
-    if i==0:
-        plt.title("Real data", fontsize = 20)
-        plt.imshow(data, cmap=cm.twilight)
-    else:
-        mod = model[i][:].reshape(n,n)
-        plt.title(f"Degree {degree[i]}", fontsize = 20)
-        plt.imshow(mod, cmap=cm.twilight)
-    
+lambdas = 10e-9
+
+beta = beta_ridge(X, z, lambdas)
+
+model= X @ beta
+model = model.reshape(n,n)
+
+plt.subplot(2,1,1)
+plt.imshow(model)
+
+plt.subplot(2,1,2)
+plt.imshow(data)
 plt.show()
