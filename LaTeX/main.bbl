@@ -3,21 +3,16 @@
 \bibitem{MLM}
 Jason Brownlee.
 \newblock {A Gentle Introduction to the Bootstrap Method}.
-\newblock
-  \url{https://machinelearningmastery.com/a-gentle-introduction-to-the-bootstrap-method/},
-  2019.
+\newblock \url{https://machinelearningmastery.com/a-gentle-introduction-to-the-bootstrap-method/}, 2019.
 
 \bibitem{HASTIE2009}
 Trevor Hastie, Robert Tibshirani, and Jerome Friedman.
-\newblock {\em The elements of statistical learning: data mining, inference and
-  prediction}.
+\newblock {\em The elements of statistical learning: data mining, inference and prediction}.
 \newblock Springer, 2 edition, 2009.
 
 \bibitem{WEN2022103535}
 Hong Wen, Xiyong Wu, Xin Liao, Dong Wang, Kaiyang Huang, and Bernd Wünnemann.
-\newblock Application of machine learning methods for snow avalanche
-  susceptibility mapping in the parlung tsangpo catchment, southeastern
-  qinghai-tibet plateau.
+\newblock Application of machine learning methods for snow avalanche susceptibility mapping in the parlung tsangpo catchment, southeastern qinghai-tibet plateau.
 \newblock {\em Cold Regions Science and Technology}, 198:103535, 2022.
 
 \end{thebibliography}

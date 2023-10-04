@@ -34,7 +34,7 @@ def Franke_function(x,y, noise=False):
   term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
   term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
   if noise==True:
-    noise_val = np.random.normal(0, 1, len(x)*len(y)) 
+    noise_val = np.random.normal(0, 0.1, len(x)*len(y)) 
     noise_val = noise_val.reshape(len(x),len(y))
     return term1 + term2 + term3 + term4 + noise_val
   else:
@@ -115,13 +115,18 @@ def plotting(x, y , y_model):
 
 if __name__ == "__main__":
   np.random.seed(2023)
-  n = 100 # amount of data points
+  n = 20 # amount of data points
   degree = np.linspace(0,5, 6, dtype=int)
 
   #Create x and y values
   x = np.sort(np.random.uniform(0, 1, n))
   y = np.sort(np.random.uniform(0, 1, n))
 
+
+  x,y = np.meshgrid(x,y)
+
+  x = np.ravel(x)
+  y = np.ravel(y)
   #Compute the Franke function with noise 
   f = Franke_function(x,y, noise=True)
 

@@ -11,12 +11,12 @@ figure \eqref{MSE and R2 OLS}
 	\caption{Plot showing the MSE and R2 score for the franke function without noise. The regression method used was OLS}
 	\label{MSE and R2 OLS}
 \end{figure}
-\noindent The next step was to include noise given by the normal distribution $\mathcal{N}(0,1)$. Figure \eqref{MSE and R2 OLS noise} shows
+\noindent The next step was to include noise given by the normal distribution $\mathcal{N}(0,0.1)$. Figure \eqref{MSE and R2 OLS noise} shows
 how the MSE and R2 score changes when noise is includet in to the data set.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Figure_4.png}
-	\caption{Plot showing the MSE and R2 score for the franke function with noise $\mathcal{N}(0,1)$. The regression method used was OLS}
+	\caption{Plot showing the MSE and R2 score for the franke function with noise $\mathcal{N}(0,0.1)$. The regression method used was OLS}
 	\label{MSE and R2 OLS noise}
 \end{figure}
 \newline \newline
@@ -30,7 +30,7 @@ the heatmap for the training data is shown in figure \eqref{heatmap training rid
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Figure_8.png}
-	\caption{A heatmap of the MSE for the training data, for different $\lambda$ values and complexities. The $\lambda$ values goes from $10^{-5}$ to $10^{5}$ }
+	\caption{A heatmap of the MSE for the training data, for different $\lambda$ values and complexities. The $\lambda$ values goes from $10^{-8}$ to $10^{2}$ }
 	\label{heatmap training ridge}
 \end{figure}
 \begin{figure}[h]

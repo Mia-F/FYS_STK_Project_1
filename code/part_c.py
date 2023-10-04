@@ -20,12 +20,12 @@ y = np.sort(np.random.uniform(0, 1, n))
 
 x,y = np.meshgrid(x,y)
 
+x = np.ravel(x)
+y = np.ravel(y)
 
 f = Franke_function(x, y)#, noise = True)
 
-# Define the values of lambda (alpha) for Lasso regression
-#alphas = np.logspace(-4, 4, 1000)
-alphas = np.logspace(-5,5,1000)
+alphas = np.logspace(-8,2,1000)
 
 mse_error_Lasso_train = np.zeros((len(degree),len(alphas)))
 r2_score_Lasso_train = np.zeros((len(degree),len(alphas)))
@@ -57,15 +57,17 @@ for d in range(len(degree)):
 plt.title(r"Heatmap of the MSE for the training data as a fucntion of $\lambda$ values and complexity")
 plt.imshow(mse_error_Lasso_train, aspect='auto')
 plt.grid()
-plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
+plt.xlabel(r"$\lambda$ values from $10^{-8}$ to $10^{2}$")
 plt.ylabel("Degree")
+plt.colorbar(label="MSE")
 plt.show()
 
 plt.title(r"Heatmap of the MSE for the test data as a fucntion of $\lambda$ values and complexity")
 plt.imshow(mse_error_Lasso_test, aspect='auto')
 plt.grid()
-plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
+plt.xlabel(r"$\lambda$ values from $10^{-8}$ to $10^{2}$")
 plt.ylabel("Degree")
+plt.colorbar(label="MSE")
 plt.show()
 #best_alpha = alphas[np.argmin(mse_error_Lasso_test)]
 #print("Best alpha:", best_alpha)
