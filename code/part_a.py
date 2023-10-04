@@ -145,6 +145,10 @@ if __name__ == "__main__":
   Score_test_scitlearn = np.zeros(len(degree))
 
   beta_val = np.zeros(len(degree), dtype=object)
+	
+  beta_vals = []
+  beta_vals_mean = []
+  beta_vals_std = []
 
   for i in tqdm(range(len(degree))):
     #Create the design matrix
@@ -152,6 +156,12 @@ if __name__ == "__main__":
     X_train, X_test, y_train, y_test = train_test_split(X, f, test_size=0.2)
     #Calculate the beta values
     beta = beta_OLS(X_train,y_train)
+
+    #Calculating the beta mean and std
+    beta_vals.append(np.mean(beta, axis= 1))
+    beta_vals_degree = np.mean(beta, axis=1)
+    beta_vals_mean.append(beta_vals_degree)
+    beta_vals_std.append(np.std(beta, axis=1))
 
     #Crate the model 
     model_train = X_train @ beta
@@ -201,8 +211,6 @@ if __name__ == "__main__":
   plt.legend()
   plt.show()
 
-
-
   plt.plot(degree, Error_train_scitlearn, label="Train")
   plt.plot(degree, Error_test_scitlearn, label="Test")
   plt.legend()
@@ -233,3 +241,39 @@ if __name__ == "__main__":
 
   plt.show()
   """
+	
+# Set theme
+sns.set_theme()
+color_palette = sns.color_palette("tab10", len(degree))
+	
+# Plotting beta coefficients for different degrees
+plt.figure(figsize=(15, 10))
+for i in range(len(degree)):
+    plt.plot(range(len(beta_vals[i])), beta_vals[i], marker = "o" ,label=f'Degree {degree[i]}', color=color_palette[i])
+
+locs, labels = plt.xticks()  # Get the current locations and labels.
+plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
+plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
+           r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
+           r'$\beta_6$', r'$\beta_7$', r'$\beta_8$', \
+           r'$\beta_9$', r'$\beta_{10}$', r'$\beta_{11}$', \
+           r'$\beta_{12}$', r'$\beta_{13}$', r'$\beta_{14}$', \
+           r'$\beta_{15}$', r'$\beta_{16}$', r'$\beta_{17}$', \
+           r'$\beta_{18}$', r'$\beta_{19}$', r'$\beta_{20}$'\
+           ], rotation=45)  # Set text labels.
+
+plt.xlabel("Coefficient Index")
+plt.ylabel("Beta Coefficient Value")
+plt.legend()
+plt.show()
+
+# Plotting beta coefficients with error bars
+plt.figure(figsize=(10, 6))
+for i in range(len(degree)):
+    plt.errorbar(range(len(beta_vals_mean[i])), beta_vals_mean[i], yerr=beta_vals_std[i], fmt='o', label=f'Degree {degree[i]}')
+    
+plt.xlabel("Coefficient Index")
+plt.ylabel("Beta Coefficient Value")
+plt.legend()
+plt.show()
+	
