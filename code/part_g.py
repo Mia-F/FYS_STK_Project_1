@@ -26,11 +26,18 @@ def creating_data(data_file, n):
 
 # Load the terrain
 
-n = 100
+n = 500
 degree = np.array([0, 10, 20, 30, 40, 50])
 data_file = '../DataFiles/SRTM_data_Norway_1.tif'
 
 data = creating_data(data_file, n)
+
+plt.title("Data used in the analysis of the terrain data")
+plt.imshow(data, cmap=cm.twilight)
+plt.colorbar()
+plt.xlabel("X")
+plt.ylabel("Y")
+plt.show()
 
 #creating x and y
 n,m = data.shape

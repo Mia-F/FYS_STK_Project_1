@@ -16,23 +16,26 @@
 	\caption{\centering A plot of the Franke function }
 	\label{Franke function}
 \end{figure}
-\noindent This function was fitted with the OLS method, 
-and polynomials with varying degrees was used to create the design matrix.
-Since the design matrix in this case was noninvertible, singular value 
-decomposition was used to create the $\beta$-values needed to create a model
-of the dataset. The mean square error and the R2 score was calculated 
-for both the testing and training datasets. The result of this analyses is 
-shown if figures \eqref{MSE and R2 OLS}, \eqref{MSE and R2 OLS noise} and ...
-Lastly a plott of the coefficents were made for each polynomial degree...
+\noindent
+The amount of data created of the franke function was a $20 x 20$ matrix where $20\%$
+of the data set was set aside as the testing dataset while the ramaining $80\%$ was used for training. The noise 
+was reduced from $\mathcal{N}(0,1)$ as proposed in the project description, to $\mathcal{0,0.1}$ for better results.
+First this data was fitted with the OLS method were varying degrees of polynomials was used to create the design matrix.
+Since the design matrix in this case was noninvertible, singular value decomposition was used to create 
+the $\beta$-values needed to create a model. After the regression was done, the mean square error and the
+R2 score was calculated for both the testing and training datasets. The different coefficients, or so called $\beta$
+values was plotted for polynomial degrees in range $0-5$. The result for this analysis of the franke function
+is shown in figures \eqref{MSE and R2 OLS}, \eqref{MSE and R2 OLS noise} and ... 
 
-\noindent Next Ridge and LASSO regression was used on the Franke function,
-to see if these methods have a better fit than what was obtained with OLS.
-Diffrent values for $\lambda$ was used to obtain the best fit as possible for each
-polynomial degree. For Ridge equation \eqref{beta ridge} was used to calculate
-the cofficents and for LASSO ....
 
-\subsection{Cross Validation Methodology}
+\noindent Next the bootstrap method was implementet with .... iterations to se how this 
+affected the result of the OLS regression analysis. This method was implemented after the dataset
+was split into a training and testing set, so that the testing dataset didn't have
+anything to do with the creation of the diffrent $\beta$ values. 
 
+\noindent The last thing done with OLS on the franke function was cross validation.. 
+
+\textbf{Need to rewrite the method section about cross validation}
 In the pursuit of assessing the robustness and reliability of Ridge regression models, we employed cross-validation, specifically scrutinizing the impact of varying regularization parameters, denoted as \(\lambda\). The function \texttt{k\_fold}, was developed to execute the k-fold cross-validation technique, accepting the dataset and an integer \(k\) as arguments, and subsequently partitioning the data into \(k\) randomized subsets (folds). It returns \(k\) pairs of training and test indices, each representing a distinct division of the data, enabling model evaluation across varied data scenarios.
 
 For each \(\lambda\) value in a logarithmically spaced array of \(\lambda\) values, denoted \texttt{lambdas}, the Ridge regression model was trained and validated \(k\) times - once per fold. Specifically, for every tuple \((\text{train\_indices}, \text{test\_indices})\) produced by \texttt{k\_fold(data, k)}, the data was divided into training and test sets \((x_{\text{train}}, y_{\text{train}}, x_{\text{test}}, y_{\text{test}})\).
@@ -40,3 +43,23 @@ Subsequently, the \texttt{design\_matrix} function generated polynomial feature 
 
 The Ridge model, instantiated with the current \(\lambda\), was then fitted with \(X_{\text{train}}\) and \(y_{\text{train}}\), and predictions \(y_{\text{pred}}\) were made using \(X_{\text{test}}\). The Mean Squared Error (MSE) between the predictions and actual test values \(y_{\text{test}}\) was computed and stored in a scores array.
 The MSE values were averaged per \(\lambda\), providing an unbiased performance metric, and facilitating the analysis and visualization of how distinct regularization parameters influenced model performance.
+
+
+\noindent Next Ridge and LASSO regression was used on the Franke function,
+to see if these methods have a better fit than what was obtained with OLS.
+Diffrent values for $\lambda$ was used to obtain the best fit as possible for each
+polynomial degree. For Ridge equation \eqref{beta ridge} was used to calculate
+the cofficents and for LASSO ..
+
+
+
+
+In the last part of this project real terrain data was analysed. Due to the massiv size 
+of the terrain data only the first $500 \cdot 500$ matrix as shown in figure \eqref{terrain data} was used to avoid ram problems. 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figure_11.png}
+	\caption{A plot of the data matrix used in the analysis of the terrain data in the second part of project 1.}
+	\label{terrain data}
+\end{figure}
+The OLS regression was applyed to creat a modell of the dataset 
