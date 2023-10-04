@@ -11,6 +11,61 @@ from sklearn.pipeline import make_pipeline
 from sklearn.utils import resample
 from sklearn.metrics import mean_squared_error
 
+# from part_a import Franke_function, design_matrix
+
+
+def Franke_function(x,y, noise=False, noise_factor=0):
+    """
+    Franke_function returns an array with dimension (len(x), len(y)), if noise is set to true
+    the output will contain noise given by a gaussian distribution N(0,1)
+
+    :x: is an array containing all the x values it can be a one dimensional array or a 2D array
+    :y: is an array containing all the y values it can be a one dimensional array or a 2D array
+    """
+    term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
+    term2 = 0.75*np.exp(-((9*x+1)**2)/49.0 - 0.1*(9*y+1))
+    term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
+    term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
+    noise_val = np.random.normal(0, 0.1, len(x)*len(y)) 
+    noise_val = noise_val.reshape(len(x),len(y))
+    return term1 + term2 + term3 + term4 + noise_factor*noise_val
+
+
+
+def design_matrix(x,y,degree):
+	"""
+	design_matrix create the design matrix for a polynomial of degree n with dimension (len(x)*len(y), degree)
+	
+	:x: is an array containing all the x values it can be a 1D array or a 2D array
+  :y: is an array containing all the y values it can be a 1D array or a 2D array
+  :degree: is the polynomial degree of the fit
+  """
+	if len(x.shape) > 1:
+		x = np.ravel(x)
+		y = np.ravel(y)
+
+	N = len(x)
+	l = int((degree+1)*(degree+2)/2)		# Number of elements in beta
+	X = np.ones((N,l))
+
+	for i in range(1,degree+1):
+		q = int((i)*(i+1)/2)
+		for k in range(i+1):
+			X[:,q+k] = (x**(i-k))*(y**k)
+
+	return X
+
+def beta_OLS(X, y):
+  """
+  beta_OLS calculates the beta values either with matrix inversion or if not possible it uses 
+  singular value decomposition, returns an array with dimension (degree, )
+
+  :X: is the disign matrix with dimension (len(x)*len(y), degree)
+  :y: is the data we whant to fit with dimension (len(x), len(y))
+  """
+
+  return np.linalg.pinv(X.T @ X) @ X.T @ y
+
 
 def franke_function(x, y, noise=False, noise_factor=0.1):
     t1 = 0.75 * np.exp(-(0.25 * (9*x - 2)**2) - (0.25 * (9*y - 2)**2))
@@ -26,7 +81,7 @@ def franke_function(x, y, noise=False, noise_factor=0.1):
     return result.reshape(-1, 1)
 
 
-def design_matrix(x, y, degree):
+def d_matrix(x, y, degree):
     if len(x.shape) > 1:
         x = np.ravel(x)
         y = np.ravel(y)
@@ -45,12 +100,12 @@ def design_matrix(x, y, degree):
     return X
 
 
-def beta_ols(X, z):
-    try:
-        return np.linalg.inv(X.T @ X) @ X.T @ z
-    except:
-        U, S, Vt = np.linalg.svd(X, full_matrices=False)
-        return Vt.T @ np.linalg.inv(np.diag(S)) @ U.T @ z.reshape(-1, 1)
+# def beta_ols(X, z):
+#     try:
+#         return np.linalg.inv(X.T @ X) @ X.T @ z
+#     except:
+#         U, S, Vt = np.linalg.svd(X, full_matrices=False)
+#         return Vt.T @ np.linalg.inv(np.diag(S)) @ U.T @ z.reshape(-1, 1)
 
 
 def mse(z_data, z_model):
@@ -67,7 +122,7 @@ def plot_3d(x, y, z):
     fig.colorbar(surf, shrink=0.5, aspect=5)
 
 
-def bootstrap(x, y, z, degree, num_bootstraps):
+def bootstrap_reshape(x, y, z, degree, num_bootstraps):
     """Resampling data using bootstrap algorithm.
     
     Args:
@@ -91,7 +146,8 @@ def bootstrap(x, y, z, degree, num_bootstraps):
 
     for i in range(num_bootstraps):
         X_, z_ = resample(X_train, z_train)
-        beta = beta_ols(X_, z_)
+        beta = beta_OLS(X_, z_)
+        # beta = beta_ols(X_, z_)
 
         z_tilde[:, i] = (X_ @ beta).ravel() 
         z_predict[:, i] = (X_test @ beta).ravel() 
@@ -102,6 +158,47 @@ def bootstrap(x, y, z, degree, num_bootstraps):
     error_train = np.mean(mse_train)
     error_test = np.mean(mse_test)
     bias = np.mean((z_test - np.mean(z_predict, axis=1, keepdims=True))**2)
+    variance = np.mean(np.var(z_predict, axis=1, keepdims=True))
+
+    return (error_train, error_test, bias, variance)
+
+
+def bootstrap(x, y, z, degree, num_bootstraps):
+    """Resampling data using bootstrap algorithm.
+    
+    Args:
+        x (np.ndarray): x-values
+        y (np.ndarray): y-values
+        z (np.ndarray): values of Franke function
+        degree (int): polynomial degree
+        num_bootstraps (int): number of resamples
+        
+    Returns:
+        tuple: Error of train and test, bias and variance
+    """
+    X = design_matrix(x, y, degree)
+    X_train, X_test, z_train, z_test = train_test_split(X, z.flatten(), test_size=0.2)
+
+    z_tilde = np.empty((z_train.shape[0], num_bootstraps))
+    z_predict = np.empty((z_test.shape[0], num_bootstraps))
+
+    mse_train = np.empty(num_bootstraps)
+    mse_test = np.empty(num_bootstraps)
+
+    for i in range(num_bootstraps):
+        X_, z_ = resample(X_train, z_train)
+        beta = beta_OLS(X_, z_)
+        # beta = beta_ols(X_, z_)
+
+        z_tilde[:, i] = (X_ @ beta).ravel() 
+        z_predict[:, i] = (X_test @ beta).ravel() 
+
+        mse_train[i] = mse(z_train, z_tilde[:, i])
+        mse_test[i] = mse(z_test, z_predict[:, i])
+
+    error_train = np.mean(mse_train)
+    error_test = np.mean(mse_test)
+    bias = np.mean((z_test - np.mean(z_predict, axis=1))**2)
     variance = np.mean(np.var(z_predict, axis=1, keepdims=True))
 
     return (error_train, error_test, bias, variance)
@@ -124,7 +221,7 @@ def bootstrap_sklearn(x, y, z, degree, num_bootstraps, intercept=True):
     X = np.column_stack((x.ravel(), y.ravel()))
     # poly = PolynomialFeatures(degree=degree)
     # X = poly.fit_transform(X_)
-    X_train, X_test, z_train, z_test = train_test_split(X, z, test_size=0.2)
+    X_train, X_test, z_train, z_test = train_test_split(X, z.flatten(), test_size=0.2)
     # scaler = StandardScaler()
     # scaler.fit(X_train)
     # X_train_scaled = scaler.transform(X_train)
@@ -154,19 +251,27 @@ def bootstrap_sklearn(x, y, z, degree, num_bootstraps, intercept=True):
 
 if __name__ == '__main__':
     np.random.seed(2023)
-    n = 10
-    max_degree = 15
+    n = 20
+    max_degree = 20
     x_ = np.linspace(0, 1, n)
     y_ = np.linspace(0, 1, n)
 
     x, y = np.meshgrid(x_, y_)
     
-    x = np.ravel(x)
-    y = np.ravel(y)
+    # x = np.ravel(x)
+    # y = np.ravel(y)
 
-    z = franke_function(x, y, noise=True, noise_factor=1)
-    #z = z.reshape(-1, 1)
+    # With reshape
+    # z = franke_function(x, y, noise=True, noise_factor=1)
+    # z = z.reshape(-1, 1)
     # plot_3d(x, y, z)
+
+    x.ravel()
+    y.ravel()
+    z = Franke_function(x, y, noise=True, noise_factor=1)
+
+    # SKlearn
+    # z = Franke_function(x.ravel(), y.ravel(), noise=True, noise_factor=0)
 
     degrees = np.zeros(max_degree)
     error = np.zeros(max_degree)
@@ -175,17 +280,25 @@ if __name__ == '__main__':
     bias = np.zeros(max_degree)
     variance = np.zeros(max_degree)
 
+
     for i in range(max_degree):
         degrees[i] = i + 1
-        error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100, intercept=False)
-        # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 1000, intercept=False)
+        error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
+        # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
+        # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
 
+    error_sum = bias + variance
     fig, ax = plt.subplots()
-    # ax.plot(degrees, np.log10(error), label='Train sk')
-    ax.plot(degrees, np.log10(error_train), label='Train')
-    ax.plot(degrees, np.log10(error_test), label='Test')
-    ax.plot(degrees, np.log10(bias), 'b--', label='Bias')
-    ax.plot(degrees, np.log10(variance), 'g.', label='Variance')
+    # ax.plot(degrees, np.log10(error_train), label='Train')
+    # ax.plot(degrees, np.log10(error_test), label='Test')
+    # ax.plot(degrees, np.log10(bias), 'b--', label='Bias')
+    # ax.plot(degrees, np.log(variance), 'r--', label='Variance')
+
+    # ax.plot(degrees, error_train, label='Train')
+    # ax.plot(degrees, error_sum, label='Error sum')
+    ax.plot(degrees, error_test, label='Test error')
+    ax.plot(degrees, bias, 'b--', label='Bias')
+    ax.plot(degrees, variance, 'r--', label='Variance')
     # ax.set_xscale('log')
     ax.set_yscale('log')
     ax.legend()
