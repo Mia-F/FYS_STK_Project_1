@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 np.random.seed(2023)
 n = 100
-degree = np.array([1,2,3,4,5,6,7,8,9,10])
+degree = np.array([1,2,3,4,5])
 #degree = np.array([9])
 
 x = np.sort(np.random.uniform(0, 1, n))
@@ -25,7 +25,7 @@ f = Franke_function(x, y)#, noise = True)
 
 # Define the values of lambda (alpha) for Lasso regression
 #alphas = np.logspace(-4, 4, 1000)
-alphas = np.logspace(-4,4,100)
+alphas = np.logspace(-5,5,1000)
 
 mse_error_Lasso_train = np.zeros((len(degree),len(alphas)))
 r2_score_Lasso_train = np.zeros((len(degree),len(alphas)))
@@ -42,7 +42,7 @@ for d in range(len(degree)):
   
     for i, alpha in tqdm(enumerate(alphas)):
         # Create and fit the Lasso regression model
-        clf = linear_model.Lasso(fit_intercept=True, max_iter=10000, alpha=alpha)
+        clf = linear_model.Lasso(fit_intercept=True, max_iter=1000000, alpha=alpha)
         clf.fit(X_train, y_train)
 
         model_train = clf.predict(X_train)
@@ -54,6 +54,19 @@ for d in range(len(degree)):
         mse_error_Lasso_test[d][i] = MSE(y_test, model_test)
         r2_score_Lasso_test[d][i] = R2(y_test, model_test)
 
+plt.title(r"Heatmap of the MSE for the training data as a fucntion of $\lambda$ values and complexity")
+plt.imshow(mse_error_Lasso_train, aspect='auto')
+plt.grid()
+plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
+plt.ylabel("Degree")
+plt.show()
+
+plt.title(r"Heatmap of the MSE for the test data as a fucntion of $\lambda$ values and complexity")
+plt.imshow(mse_error_Lasso_test, aspect='auto')
+plt.grid()
+plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
+plt.ylabel("Degree")
+plt.show()
 #best_alpha = alphas[np.argmin(mse_error_Lasso_test)]
 #print("Best alpha:", best_alpha)
 

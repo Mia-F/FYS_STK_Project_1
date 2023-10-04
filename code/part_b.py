@@ -43,8 +43,8 @@ def model(lambdas, degree):
 
     
 n = 100
-degree = np.array([0,1,2,3,4,5,6,7,8,9,10])
-lambdas = np.logspace(-5, 5,100)
+degree = np.linspace(0,10,11, dtype=int)
+lambdas = np.logspace(-8, 8,10000)
 
 x = np.sort(np.random.uniform(0, 1, n))
 y = np.sort(np.random.uniform(0, 1, n))
@@ -70,20 +70,18 @@ for d in tqdm(range(len(degree))):
         Error_train[d][i] = MSE(y_train, model_train)
         Error_test[d][i] = MSE(y_test, model_test)
 
-
-plt.title(r"Heatmap of the MSE for the train data as a fucntion of $\lambda$ values and complexity")
-ax = sns.heatmap(Error_train, linewidth=0.5)
-plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
-plt.ylabel("Degree")
-plt.show()
-
 plt.title(r"Heatmap of the MSE for the training data as a fucntion of $\lambda$ values and complexity")
-ax = sns.heatmap(Error_test, linewidth=0.5)
+plt.imshow(Error_train, aspect='auto')
+plt.grid()
 plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
 plt.ylabel("Degree")
 plt.show()
 
-plt.semilogx(lambdas, Error_train[9][:])
+plt.title(r"Heatmap of the MSE for the test data as a fucntion of $\lambda$ values and complexity")
+plt.imshow(Error_test, aspect='auto')
+plt.grid()
+plt.xlabel(r"$\lambda$ values from $10^{-5}$ to $10^{5}$")
+plt.ylabel("Degree")
 plt.show()
 
 

@@ -19,21 +19,28 @@ how the MSE and R2 score changes when noise is includet in to the data set.
 	\caption{Plot showing the MSE and R2 score for the franke function with noise $\mathcal{N}(0,1)$. The regression method used was OLS}
 	\label{MSE and R2 OLS noise}
 \end{figure}
+\newline \newline
+\textbf{Insert $\beta$ plott}
+\newline \newline
 
-For Ridge 
-\begin{figure}[h]
-	\centering
-	\includegraphics[width=0.5\textwidth]{Figure_7.png}
-	\caption{}
-	\label{}
-\end{figure}
-
+\noindent For Ridge Regression on the franke function have we plotted a heatmap to show 
+how the MSE changes with diffrent $\lambda$ values and complexities. A plot of
+the heatmap for the training data is shown in figure \eqref{heatmap training ridge}
+, and the heatmap for the test data is shown in figure \eqref{heatmap test ridge}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.5\textwidth]{Figure_8.png}
-	\caption{}
-	\label{}
+	\caption{A heatmap of the MSE for the training data, for different $\lambda$ values and complexities. The $\lambda$ values goes from $10^{-5}$ to $10^{5}$ }
+	\label{heatmap training ridge}
 \end{figure}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.5\textwidth]{Figure_7.png}
+	\caption{A heatmap of the MSE for the testing data, for different $\lambda$ values and complexities. The $\lambda$ values goes from $10^{-5}$ to $10^{5}$}
+	\label{heatmap test ridge}
+\end{figure}
+
+
 
 
 
@@ -44,7 +51,6 @@ For Ridge
 	\label{OLS figure}
 \end{figure*}
 
-\textbf{solve the beta plot}
 
 \begin{figure*}[h]
 	\centering
