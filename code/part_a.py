@@ -242,16 +242,16 @@ if __name__ == "__main__":
   plt.show()
   """
 	
-# Set theme
-sns.set_theme()
+
 color_palette = sns.color_palette("tab10", len(degree))
 	
 # Plotting beta coefficients for different degrees
-plt.figure(figsize=(15, 10))
+plt.figure()
 for i in range(len(degree)):
     plt.plot(range(len(beta_vals[i])), beta_vals[i], marker = "o" ,label=f'Degree {degree[i]}', color=color_palette[i])
 
 locs, labels = plt.xticks()  # Get the current locations and labels.
+plt.title(r"Plot of the $\beta$ values for the different polynomial degrees")
 plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
 plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
            r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
@@ -268,7 +268,7 @@ plt.legend()
 plt.show()
 
 # Plotting beta coefficients with error bars
-plt.figure(figsize=(10, 6))
+plt.figure()
 for i in range(len(degree)):
     plt.errorbar(range(len(beta_vals_mean[i])), beta_vals_mean[i], yerr=beta_vals_std[i], fmt='o', label=f'Degree {degree[i]}')
     
