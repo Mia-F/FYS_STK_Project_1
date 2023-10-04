@@ -160,8 +160,12 @@ if __name__ == '__main__':
     y_ = np.linspace(0, 1, n)
 
     x, y = np.meshgrid(x_, y_)
+    
+    x = np.ravel(x)
+    y = np.ravel(y)
+
     z = franke_function(x, y, noise=True, noise_factor=1)
-    z = z.reshape(-1, 1)
+    #z = z.reshape(-1, 1)
     # plot_3d(x, y, z)
 
     degrees = np.zeros(max_degree)
