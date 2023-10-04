@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import seaborn as sns
 from imageio.v2 import imread
 
 from matplotlib import cm
@@ -17,6 +18,7 @@ from tqdm import tqdm
 
 # from part_a import Franke_function, design_matrix
 
+sns.set_theme()
 
 def Franke_function(x,y, noise_factor=0):
     """
@@ -33,7 +35,6 @@ def Franke_function(x,y, noise_factor=0):
     noise_val = np.random.normal(0, 0.1, len(x)*len(y)) 
     noise_val = noise_val.reshape(len(x),len(y))
     return term1 + term2 + term3 + term4 + noise_factor*noise_val
-
 
 
 def design_matrix(x,y,degree):
@@ -58,6 +59,7 @@ def design_matrix(x,y,degree):
 			X[:,q+k] = (x**(i-k))*(y**k)
 
 	return X
+
 
 def beta_OLS(X, y):
   """
@@ -106,14 +108,6 @@ def d_matrix(x, y, degree):
             X[:, q+k] = x**(i-k) * (y**k)
     
     return X
-
-
-# def beta_ols(X, z):
-#     try:
-#         return np.linalg.inv(X.T @ X) @ X.T @ z
-#     except:
-#         U, S, Vt = np.linalg.svd(X, full_matrices=False)
-#         return Vt.T @ np.linalg.inv(np.diag(S)) @ U.T @ z.reshape(-1, 1)
 
 
 def mse(z_data, z_model):
@@ -350,10 +344,8 @@ if __name__ == '__main__':
     max_degree = 15
     degrees = np.arange(1, max_degree+1, 1, dtype=np.int32)
 
-
     x_ = np.linspace(0, 1, n)
     y_ = np.linspace(0, 1, n)
-
     x, y = np.meshgrid(x_, y_)
 
     # Franke
@@ -372,52 +364,59 @@ if __name__ == '__main__':
     variance = np.zeros(max_degree)
 
 
-    # for i in range(max_degree):
-    #     degrees[i] = i + 1
-    #     error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
+    for i in range(max_degree):
+        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
         # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
 
     # error_sum = bias + variance
-    # fig, ax = plt.subplots()
+    fig1, ax1 = plt.subplots()
+    fig2, ax2 = plt.subplots()
 
-    # ax.plot(degrees, error_train, label='Train error')
-    # ax.plot(degrees, error_test, label='Test error')
-    # ax.plot(degrees, bias, 'b--', label='Bias')
-    # ax.plot(degrees, variance, 'r--', label='Variance')
+    ax1.plot(degrees, error_train, label='Train error')
+    ax1.plot(degrees, error_test, label='Test error')
+
+    ax2.plot(degrees, error_test, label='Error')
+    ax2.plot(degrees, bias, 'b--', label='Bias')
+    ax2.plot(degrees, variance, 'r--', label='Variance')
     # ax.set_xscale('log')
+    ax1.set_yscale('log')
+    ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax1.legend()
+    fig1.savefig("../LaTeX/Images/bootstrap_error.png")
+    ax2.set_yscale('log')
+    ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax2.legend()
+    fig2.savefig("../LaTeX/Images/bias_variance.png")
+
+    # lambdas = np.logspace(-8, 0, 9)
+    # l = len(lambdas)
+
+    # error_lamb = np.zeros((len(degrees), l))
+    # error_train_lamb = np.zeros((len(degrees), l))
+    # error_test_lamb = np.zeros((len(degrees), l))
+    # bias_lamb = np.zeros((len(degrees), l))
+    # variance_lamb = np.zeros((len(degrees), l))
+
+    # # Ridge bootstrap
+    # for i in range(max_degree):
+    #     X = design_matrix(x, y, int(degrees[i]))
+    #     X_train, X_test, z_train, z_test = train_test_split(X, z.flatten(), test_size=0.2)
+
+    #     for j in tqdm(range(l)):
+    #         error_train_lamb[i, j], error_test_lamb[i, j], bias_lamb[i, j], variance_lamb[i, j] = bootstrap_ridge(X_train, X_test, z_train, z_test, lambdas[j], 100)
+
+    # e_train = np.zeros(max_degree)
+
+    # fig, ax = plt.subplots()    
+    # for j in range(l):
+    #     # e_train = error_train_lamb[:, j]
+    #     ax.plot(degrees, error_train_lamb[:, j], label=f'Train error {lambdas[j]}')
+    #     ax.plot(degrees, error_test_lamb[:, j], label=f'Test error {lambdas[j]}')
+    #     ax.plot(degrees, bias_lamb[:, j], label=f'Bias {lambdas[j]}')
+    #     ax.plot(degrees, variance_lamb[:, j], label=f'Variance {lambdas[j]}')
+    #     # ax.set_xscale('log')
     # ax.set_yscale('log')
     # ax.legend()
-    # plt.show()
-
-    lambdas = np.logspace(-8, 0, 9)
-    l = len(lambdas)
-
-    error_lamb = np.zeros((len(degrees), l))
-    error_train_lamb = np.zeros((len(degrees), l))
-    error_test_lamb = np.zeros((len(degrees), l))
-    bias_lamb = np.zeros((len(degrees), l))
-    variance_lamb = np.zeros((len(degrees), l))
-
-    # Ridge bootstrap
-    for i in range(max_degree):
-        X = design_matrix(x, y, int(degrees[i]))
-        X_train, X_test, z_train, z_test = train_test_split(X, z.flatten(), test_size=0.2)
-
-        for j in tqdm(range(l)):
-            error_train_lamb[i, j], error_test_lamb[i, j], bias_lamb[i, j], variance_lamb[i, j] = bootstrap_ridge(X_train, X_test, z_train, z_test, lambdas[j], 100)
-
-    e_train = np.zeros(max_degree)
-
-    fig, ax = plt.subplots()    
-    for j in range(l):
-        # e_train = error_train_lamb[:, j]
-        ax.plot(degrees, error_train_lamb[:, j], label=f'Train error {lambdas[j]}')
-        ax.plot(degrees, error_test_lamb[:, j], label=f'Test error {lambdas[j]}')
-        ax.plot(degrees, bias_lamb[:, j], label=f'Bias {lambdas[j]}')
-        ax.plot(degrees, variance_lamb[:, j], label=f'Variance {lambdas[j]}')
-        # ax.set_xscale('log')
-    ax.set_yscale('log')
-    ax.legend()
     plt.show()
