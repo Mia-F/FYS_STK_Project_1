@@ -32,12 +32,12 @@ data_file = '../DataFiles/SRTM_data_Norway_1.tif'
 
 data = creating_data(data_file, n)
 
-plt.title("Data used in the analysis of the terrain data")
-plt.imshow(data, cmap=cm.twilight)
-plt.colorbar()
-plt.xlabel("X")
-plt.ylabel("Y")
-plt.show()
+#plt.title("Data used in the analysis of the terrain data")
+#plt.imshow(data, cmap=cm.twilight)
+#plt.colorbar()
+#plt.xlabel("X")
+#plt.ylabel("Y")
+#plt.show()
 
 #creating x and y
 n,m = data.shape
@@ -132,4 +132,20 @@ plt.imshow(model)
 
 plt.subplot(2,1,2)
 plt.imshow(data)
+plt.show()
+
+
+plt.suptitle("2D plot of the terrain data fitted with OLS of different complexities")
+
+for i in range(len(degree)):
+    plt.subplot(2,3,i+1)
+    if i==0:
+        print("noe")
+        plt.title("Real data", fontsize = 20)
+        plt.imshow(data, cmap=cm.twilight)
+    else:
+        mod = model[i][:].reshape(n,n)
+        plt.title(f"Degree {degree[i]}", fontsize = 20)
+        plt.imshow(mod, cmap=cm.twilight)
+    
 plt.show()
