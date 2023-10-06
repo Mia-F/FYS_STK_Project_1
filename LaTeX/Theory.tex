@@ -118,8 +118,11 @@ Calculations for both the optimal $\beta$ and variance can be found in the appen
 
 \subsubsection{LASSO}
 
-\noindent Lasso, short for Least Absolute Shrinkage and Selection Operator, is a shrinkage method similar to Ridge Regression. Both methods work towards minimizing the residual sum of squares while simultaneously incorporating a penalty term. The primary distinction between these regression techniques lies in the way the penalty term is defined into the cost function.
-\noindent In Lasso regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by the norm-1 vector $\sum_{i} 
+\noindent Lasso, short for Least Absolute Shrinkage and Selection Operator, is a shrinkage method similar to Ridge Regression. Both
+methods work towards minimizing the residual sum of squares while simultaneously incorporating a penalty term. The primary distinction
+between these regression techniques lies in the way the penalty term is defined into the cost function.
+\noindent In Lasso regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by
+the norm-1 vector $\sum_{i} 
 |\boldsymbol{\beta_i}|$, leading to a nonlinear solution of $y_i$. (Kilde 1AM)
 
 \noindent The cost function for Lasso is shown under in equation \eqref{cost_function_Lasso}. 
@@ -134,11 +137,46 @@ Calculations for both the optimal $\beta$ and variance can be found in the appen
     \mathbf{X}^T\mathbf{X}\boldsymbol{\beta} + \lambda sgn(\boldsymbol{\beta}) = 2\mathbf{X}^T\boldsymbol{y} \label{eq: optimal_lasso}
 \end{equation}
 
-\noindent Lasso does not yield a closed-form expression due to a non linear solution, necessitating a numerical approach for its determination. 
-This method is essential in regression analysis because it carefully balance precision and clarity by penalizing the absolute size of regression coefficients.(Kilde 2AM)
+\noindent Lasso does not yield a closed-form expression due to a non linear solution, necessitating a numerical approach for its
+determination. 
+This method is essential in regression analysis because it carefully balance precision and clarity by penalizing the absolute size of
+regression coefficients.(Kilde 2AM)
 
+\subsection{Model evaluation methods}
+\subsubsection{Mean Square Error}
 
-\subsection{MSE}
+\noindent Mean Squared Error,abbreviated MSE, is a commonly used risk metric that corresponds to the expected value of the squared (quadratic) error or loss (Kilde 3AM). It is defined as 
+
+\begin{equation} 
+ MSE(\boldsymbol{y},\tilde{\boldsymbol{y}}) = \frac{1}{n} \sum_{i=0}^{n-1}(y_i \tilde{y}_i)^2,
+ \label{MSE} 
+\end{equation}
+
+\noindent MSE measures the average of the squared differences between predicted values and actual outcomes. Therefore, the smaller the
+value, the better the fit between the predictions and reality. Since the MSE value comes from the square of the errors between the actual
+values and the predicted values, it cannot be negative. A perfect fit between the predictions and reality would yield an MSE value equal
+to zero (Kilde 3AM). A negative side to MSE is that it is not scaled. Outliers will thus contribute the same amount as any other point,
+which can lead to an skewed MSE value. 
+
+\subsubsection{$R^2$-Score}
+
+\noindent The $R^2$-score function is another popular error metric, it computes the coefficient of determination, which is an indicator of
+how accurately the model can predict future samples. The score ranges from -1 to 1, where a score of 1 indicates a perfect fit, and a
+score of -1 indicates a perfectly inadequate model. A constant model that always predicts the expected value of the target variable,
+regardless of the input features, would receive an $R^2$-score of 0 (Kilde 3AM).
+
+\noindent The r2 score is defined as 
+
+\begin{equation} 
+R^2(\boldsymbol{y}, \tilde{\boldsymbol{y}}) = 1 - \frac{\sum_{i=0}^{n - 1} (y_i - \tilde{y}_i)^2}{\sum_{i=0}^{n - 1} (y_i - \bar{y})^2}, \label{R2} 
+\end{equation}
+
+\noindent where where we have defined the mean value of $\boldsymbol{y}$ as
+
+\begin{equation} 
+\bar{y} =  \frac{1}{n} \sum_{i=0}^{n - 1} y_i.
+\end{equation}
+
 
 
 \subsection{Resampling techniques}
