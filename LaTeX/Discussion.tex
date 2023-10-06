@@ -23,8 +23,33 @@ much prettier (as shown in figure \eqref{franke noise 0.1}) since noise has a te
 discussing the result of the regression analysis of the Franke function.
 
 \subsection*{The Franke function}
-\noindent Since the parameter x and y only had values from 0 to 1 when creating the 
-Franke function we did not see it necessary to scale the data.
+\noindent We start with the analyses of the OLS implementation on the Franke
+function. It is important to note that since the parameter x and y only had 
+values from 0 to 1 when creating the Franke function, we did not see it necessary
+to scale the data for any of the analysis of the franke function, since it in a way already is scaled. 
+The first results are the OLS model of the franke function without noise. Figure \eqref{MSE and R2 OLS}
+shows the MSE and R2 scores as a function of the polynomial degree used to create the design matrix.
+The size of the dataset analysis was a $20 \cdot 20$ matrix, were $20\%$ was put aside as 
+test data, and the rest was used for training. What we can see from the figure is that
+the MSE is larger for lower polynomial degrees and starts to lower with higher values. 
+At a fifth order polynomial degree the MSE approaches zero both for the test and training set.
+This is as expected, since there is no noise present there will not be any posibility 
+for overfitting the model to the noise. Therefore the MSE will become lower and 
+lower for higher order polynomials as shown in figure \eqref{MSE and R2 OLS}. When 
+it comes to the R2 score we see that it becomes closer and closer to one with higher 
+order polynomials. This is due to our model becoming increasingly better with 
+higher orders as shown form the MSE values.
+
+Next we look at what happens when we introduce noise given by the normal distribution 
+$\mathcal{N}(0,0.1)$. Figure \eqref{MSE and R2 OLS noise} show the MSE and the R2 score
+for this case.Here we can see a classical example of overfitting the model to the noise.
+We see that the MSE becomes better and better for the training set but for det test set
+we see a sudden increas after fitting with a fourth order polynomial. This is due to
+the amount of datapoints in the diffrent datasets, since the test dataset only have 
+$20\%$ of the original data while the training set consist of the ramaining $80\%$.
+If we increas the number of data points the predictet model for the test data will converge
+towards that of the training model. 
+
 
 \noindent From figure \eqref{MSE and R2 OLS} we see that when our data set does not include noise
 the MSE for the training data gets lower with increas in complexity, while 
