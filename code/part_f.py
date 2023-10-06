@@ -36,7 +36,7 @@ def k_fold(data, k):
     return k_fold_indices
 
 # A seed just to ensure that the random numbers are the same for every run.
-np.random.seed(3155)
+np.random.seed(2024)
 
 # Generate the data.
 nsamples = 100
@@ -52,7 +52,7 @@ colors = ['b', 'g', 'r', 'c', 'm', 'y']
 
 plt.figure()
 
-for idx, k in enumerate(range(5, 11)):
+for idx, k in enumerate(range(5, 11)): # Looping over the k to compare
     k_fold_indices = k_fold(data, k)  # Generate fold indices using k_fold function
 
     # Perform the cross-validation to estimate MSE using KFold
