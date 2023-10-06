@@ -6,9 +6,9 @@
 based on one or more input features. It operates under the assumption that there exists a linear relationship between the input features
 and the target variable, which is mathematically expressed as:
 
-\[
-\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p
-\]
+\begin{equation} 
+\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p \label{Linear_regression} 
+\end{equation}
 
 In this equation, $\hat{y}$ denotes the predicted target variable, while $x_1, x_2, \ldots, x_p$ represent the input features. The 
 coefficients $\beta_0, \beta_1, \beta_2, \ldots, \beta_p$ are parameters that correspond to each respective feature. The primary objective 
@@ -115,7 +115,28 @@ For the Bias variance trade off we will also need the following properties:
 \end{align}
 
 Calculations for both the optimal $\beta$ and variance can be found in the appendix
+
 \subsubsection{LASSO}
+
+\noindent Lasso, short for Least Absolute Shrinkage and Selection Operator, is a shrinkage method similar to Ridge Regression. Both methods work towards minimizing the residual sum of squares while simultaneously incorporating a penalty term. The primary distinction between these regression techniques lies in the way the penalty term is defined into the cost function.
+\noindent In Lasso regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by the norm-1 vector $\sum_{i} 
+|\boldsymbol{\beta_i}|$, leading to a nonlinear solution of $y_i$. (Kilde 1AM)
+
+\noindent The cost function for Lasso is shown under in equation \eqref{cost_function_Lasso}. 
+
+\begin{equation} 
+    C(X,\beta)_\text{Lasso} =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda||\boldsymbol{\beta}||_1 \label{cost_function_Lasso} 
+\end{equation}
+
+\noindent where $||\boldsymbol{\beta}||_1 = \sum_{i} |\boldsymbol{\beta_i}|$ which is found by taking the derivative with respect to $\boldsymbol{\beta}$ (Kilde 1AM), 
+
+\begin{equation}\label{eq: optimal_lasso}
+    \mathbf{X}^T\mathbf{X}\boldsymbol{\beta} + \lambda sgn(\boldsymbol{\beta}) = 2\mathbf{X}^T\boldsymbol{y} \label{eq: optimal_lasso}
+\end{equation}
+
+\noindent Lasso does not yield a closed-form expression due to a non linear solution, necessitating a numerical approach for its determination. 
+This method is essential in regression analysis because it carefully balance precision and clarity by penalizing the absolute size of regression coefficients.(Kilde 2AM)
+
 
 \subsection{MSE}
 
