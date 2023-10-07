@@ -1,6 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from sklearn.utils import resample
 from sklearn.linear_model import Ridge
+
 
 def design_matrix(x, y, degree):
     if len(x.shape) > 1:
@@ -50,19 +52,36 @@ lambdas = np.logspace(-3, 5, nlambdas)
 
 colors = ['b', 'g', 'r', 'c', 'm', 'y']
 
-plt.figure()
+n_bootstrap_iter = 100  # Number of bootstrap samples to create
+scores_bootstrap = np.zeros((nlambdas, n_bootstrap_iter))
 
-for idx, k in enumerate(range(5, 11)): # Looping over the k to compare
-    k_fold_indices = k_fold(data, k)  # Generate fold indices using k_fold function
+for i, lmb in enumerate(lambdas):
+    ridge = Ridge(alpha=lmb)
+    for j in range(n_bootstrap_iter):
+        data_bootstrap = resample(data, replace=True, n_samples=nsamples, random_state=j)
+        xtrain, ytrain = data_bootstrap[:, 0], data_bootstrap[:, 1]
+        Xtrain = design_matrix(xtrain, ytrain, degree=6)
+        ridge.fit(Xtrain, ytrain[:, np.newaxis])
 
-    # Perform the cross-validation to estimate MSE using KFold
+        # We use the original data as test set in this case
+        Xtest = design_matrix(x, y, degree=6)
+        ypred = ridge.predict(Xtest)
+        scores_bootstrap[i, j] = np.sum((ypred.ravel() - y)**2) / np.size(ypred)
+
+estimated_mse_bootstrap = np.mean(scores_bootstrap, axis=1)
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+plt.plot(np.log10(lambdas), estimated_mse_bootstrap, 'k--', label='Bootstrap')
+
+for idx, k in enumerate(range(5, 11)):
+    k_fold_indices = k_fold(data, k)
     scores_KFold = np.zeros((nlambdas, k))
 
-    i = 0
-    for lmb in lambdas:
+    for i, lmb in enumerate(lambdas):
         ridge = Ridge(alpha=lmb)
-        j = 0
-        for train_indices, test_indices in k_fold_indices:
+        for j, (train_indices, test_indices) in enumerate(k_fold_indices):
             xtrain, ytrain = data[train_indices, 0], data[train_indices, 1]
             xtest, ytest = data[test_indices, 0], data[test_indices, 1]
 
@@ -71,18 +90,13 @@ for idx, k in enumerate(range(5, 11)): # Looping over the k to compare
 
             Xtest = design_matrix(xtest, ytest, degree=6)
             ypred = ridge.predict(Xtest)
-
-            scores_KFold[i, j] = np.sum((ypred - ytest[:, np.newaxis])**2) / np.size(ypred)
-
-            j += 1
-        i += 1
+            scores_KFold[i, j] = np.sum((ypred.ravel() - ytest)**2) / np.size(ypred)
 
     estimated_mse_KFold = np.mean(scores_KFold, axis=1)
-
-    ## Plot the results for custom KFold
     plt.plot(np.log10(lambdas), estimated_mse_KFold, color=colors[idx], label=f'k = {k}')
 
-plt.xlabel('log10(lambda)')
-plt.ylabel('mse')
+plt.xlabel(r'$\log_{10}(\lambda)$')
+plt.ylabel('MSE')
 plt.legend()
+plt.title('Comparison of Bootstrap and k-Fold CV Methods')
 plt.show()

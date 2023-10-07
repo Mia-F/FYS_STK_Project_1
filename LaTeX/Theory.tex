@@ -159,12 +159,12 @@ which can lead to an skewed MSE value.
 
 \subsubsection{$R^2$-Score}
 
-\noindent The $R^2$-score function is another popular error metric, it computes the coefficient of determination, which is an indicator of
-how accurately the model can predict future samples. The score ranges from -1 to 1, where a score of 1 indicates a perfect fit, and a
-score of -1 indicates a perfectly inadequate model. A constant model that always predicts the expected value of the target variable,
-regardless of the input features, would receive an $R^2$-score of 0 (Kilde 3AM).
+\noindent The $R^2$-score function is a popular error metric that computes the coefficient of determination, which indicates how
+accurately a model can predict future samples. The score typically ranges from 0 to 1, but it can also be negative. A score of 1 indicates
+a perfect fit, while a negative value indicates an inadequate model. A constant model that always predicts the expected value of the target
+variable, regardless of the input features, would receive an $R^2$-score of 0. (Kilde 3AM).
 
-\noindent The r2 score is defined as 
+\noindent The $R^2$-score is defined as 
 
 \begin{equation}\label{eqR2} 
 R^2(\boldsymbol{y}, \tilde{\boldsymbol{y}}) = 1 - \frac{\sum_{i=0}^{n - 1} (y_i - \tilde{y}_i)^2}{\sum_{i=0}^{n - 1} (y_i - \bar{y})^2}
