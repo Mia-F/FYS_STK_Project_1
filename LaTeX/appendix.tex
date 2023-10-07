@@ -77,4 +77,12 @@ For $\lambda = 0$ we have $\mathbb{E} (\boldsymbol{\hat{\beta}}^{OLS})$. The var
 
 
 \section{Bias-variance trade-off}
+From equation $\boldsymbol{y} = f(\boldsymbol{x}) + \boldsymbol{\epsilon}$ and the assumption $f(\boldsymbol{x}) \approx \boldsymbol{\tilde{y}} = \boldsymbol{X \beta}$
+The expectation value of the mean square error is 
+\begin{align*}\label{eq:bias_variance}
+	\mathbb{E}((\boldsymbol{y} - \boldsymbol{\tilde{y}})^{2}) &= \mathbb{E}(\boldsymbol{y}^{2}) - 2 \mathbb{E}(\boldsymbol{y} \boldsymbol{\tilde{y}}) \mathbb{E}(\boldsymbol{\tilde{y}}^{2}) \\
+	&= \mathbb{E}(f(\boldsymbol{x})^{2}) + \mathbb{E}(\boldsymbol{\epsilon}^{2}) - 2 f(\boldsymbol{x}) \mathbb{E}(\boldsymbol{\tilde{y}}) + \mathbb{V}(\boldsymbol{\tilde{y}}) + \mathbb{E}(\boldsymbol{\tilde{y}})^{2} \\
+	&= f(\boldsymbol{x})^{2} - 2 f(\boldsymbol{x}) \mathbb{E}(\boldsymbol{\tilde{y}}) + \mathbb{E}(\boldsymbol{\tilde{y}})^{2} + \mathbb{V}(\boldsymbol{\tilde{y}}) + \mathbb{V}(\boldsymbol{\epsilon}) \\
+	&= \mathbb{E}((f(\boldsymbol{x}) - \mathbb{E}(\boldsymbol{\tilde{y}}))^{2}) + \mathbb{V}(\boldsymbol{\tilde{y}}) + \sigma^{2}
+\end{align*}
 
