@@ -11,9 +11,10 @@ from sklearn import linear_model
 from tqdm import tqdm
 
 np.random.seed(2023)
-n = 100
-degree = np.array([1,2,3,4,5])
-#degree = np.array([9])
+n = 50
+degree = np.linspace(0,5,6, dtype=int)
+alphas  = np.logspace(-8, 2, 1000)
+
 
 x = np.sort(np.random.uniform(0, 1, n))
 y = np.sort(np.random.uniform(0, 1, n))
@@ -24,8 +25,6 @@ x = np.ravel(x)
 y = np.ravel(y)
 
 f = Franke_function(x, y)#, noise = True)
-
-alphas = np.logspace(-8,2,1000)
 
 mse_error_Lasso_train = np.zeros((len(degree),len(alphas)))
 r2_score_Lasso_train = np.zeros((len(degree),len(alphas)))
