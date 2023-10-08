@@ -87,4 +87,15 @@ Lastly for Ridge regression we see what happens when $\lambda$ is put to zero.
 	\caption{}
 	\label{OLS figure terrain data}
 \end{figure*}
+
+\subsection{Result for cross validation}
+\noindent The Mean Squared Error (MSE) is depicted on the $y$-axis, while the logarithm to the base 10 of the hyperparameter $\lambda$ ($\log_{10}(\lambda)$) for Ridge Regression is represented on the $x$-axis. Different lines in varying colors are plotted to showcase the MSE across different $\lambda$ values for varying numbers of folds ($k$) in the cross-validation, ranging from $k=5$ to $k=10$. 
+
+\begin{figure*}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{Images/Comparison.png}
+	\caption{}
+	\label{Cross validation comparison with bootstap}
+\end{figure*}
+
 \subsection{Results for terrain data}

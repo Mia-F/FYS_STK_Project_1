@@ -1,13 +1,13 @@
 \thispagestyle{plain}
-
+\externaldocument{appendix}
 \subsection{Linear regression methods}
 
 \noindent Linear regression is a foundational statistical modeling technique employed for the prediction of continuous target variables
 based on one or more input features. It operates under the assumption that there exists a linear relationship between the input features
 and the target variable, which is mathematically expressed as:
 
-\begin{equation} 
-\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p \label{Linear_regression} 
+\begin{equation}\label{eq:linear_regression} 
+\hat{y} = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \ldots + \beta_p x_p 
 \end{equation}
 
 In this equation, $\hat{y}$ denotes the predicted target variable, while $x_1, x_2, \ldots, x_p$ represent the input features. The 
@@ -28,8 +28,8 @@ the observed data and the predicted model.
 %is linear in the inputs $X_1, X_2 \dots X_n$
 
 A linear regression model has the following form :
-\begin{align}
-    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i \label{linear model} \text{\cite{HASTIE2009}} %\cite{hastie_09_elements-of.statistical-learning} 
+\begin{align}\label{eq:linear_model}
+    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i  \text{\cite{HASTIE2009}} \\%\cite{hastie_09_elements-of.statistical-learning} 
 \end{align}
 
 Where $\beta$ is the coefficients and X the design matrix. It is importent to note 
@@ -41,23 +41,23 @@ that thise method assume that either the function is linear or approxematly line
 regression analysis, with the primary objective of creating a model that 
 minimizes the discrepancy between observed data and the predicted model. 
 This is achieved by estimating the coefficients in a linear regression model, 
-as defined in Equation \eqref{linear model}
+as defined in Equation \ref{eq:linear_model}
 , while minimizing the Mean Squared 
 Error (MSE) %\cite{AY}.
 To minimize the MSE, we calculate the optimal $\beta$ values. This involves 
-taking the derivative of the cost function, as shown in Equation \eqref{cost_function}, 
+taking the derivative of the cost function, as shown in Equation \ref{eq:cost_function}, 
 and setting it to zero.
 
-\begin{equation}
-C(\beta) = \frac{1}{n} \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace \label{cost_function}
+\begin{equation}\label{eq:cost_function}
+C(\beta) = \frac{1}{n} \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace 
 \end{equation}
 
 \noindent By solving $\frac{\partial C(\beta)}{\partial \beta} = 0$, we determine that 
 for OLS, the optimal $\beta$ values can be obtained by solving Equation
-\eqref{optimal beta OLS}.
+\ref{eq:optimal_beta_OLS}.
 
-\begin{equation}
-\beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y} \label{optimal beta OLS}
+\begin{equation}\label{eq:optimal_beta_OLS}
+\beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y} 
 \end{equation}
 
 \noindent Additionally, OLS possesses other properties that are relevant to this project,
@@ -68,7 +68,7 @@ be expressed as follows:
 &\mathbb{E}_{OLS}(y_i) = \textbf{X}{i,*} \beta\\
 &\mathbb{E}_{OLS}(\beta) = \beta\\
 &\mathbb{V}_{OLS}(y_i) = \sigma^2\\
-&\mathbb{V}_{OLS}(\hat{\beta}) = \sigma^2 (\textbf{X}^T \textbf{X})^{-1}
+&\mathbb{V}_{OLS}(\hat{\beta}) = \sigma^2 (\textbf{X}^T \textbf{X})^{-1} \\
 \end{align}
 \noindent For a comprehensive step-by-step derivation of these expressions, please refer
 to Appendix A. OLS, as a regression method, relies on specific assumptions 
@@ -96,14 +96,14 @@ developed namly Ridge and LASSO regression.
 
 \subsubsection{Ridge}
 \noindent Ridge regression closely resembles OLS,but it have the addition of a term in the 
-cost function, as depicted in the equation \eqref{cost_function Ridge}.
-\begin{equation}
-    C(X,\beta) =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda \beta^T \beta \label{cost_function Ridge}
+cost function, as depicted in the equation \ref{eq:cost_function Ridge}.
+\begin{equation}\label{eq:cost_function Ridge}
+    C(X,\beta) =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda \beta^T \beta
 \end{equation}
 If we take the derivative of the cost function $\frac{\partial C(X, \beta)}{\partial \beta}$ and 
 solve the equation when the derivative is zero, we then optain the equation for the optimal $\beta$:
-\begin{equation}
-    \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y} \label{beta ridge}
+\begin{equation}\label{eq:beta_ridge}
+    \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y} 
 \end{equation}
 This extra term $\lambda \textbf{I}$ helps controling the size of the coefficents, if $\lambda$ is 
 small, then ..
@@ -114,31 +114,54 @@ For the Bias variance trade off we will also need the following properties:
     & \mathbb{V}(\beta_{Ridge}) = \sigma^2[X^T X + \lambda I]^{-1} X^T X \{[X^T X + \lambda I]^{-1}\}^T
 \end{align}
 
-Calculations for both the optimal $\beta$ and variance can be found in the appendix
+Calculations for both the optimal $\beta$ and variance can be found in the appendix \ref{eq:bias_variance}
 
 \subsubsection{LASSO}
 
-\noindent Lasso, short for Least Absolute Shrinkage and Selection Operator, is a shrinkage method similar to Ridge Regression. Both methods work towards minimizing the residual sum of squares while simultaneously incorporating a penalty term. The primary distinction between these regression techniques lies in the way the penalty term is defined into the cost function.
-\noindent In Lasso regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by the norm-1 vector $\sum_{i} 
+\noindent Lasso, short for Least Absolute Shrinkage and Selection Operator, is a shrinkage method similar to Ridge Regression. Both
+methods work towards minimizing the residual sum of squares while simultaneously incorporating a penalty term. The primary distinction
+between these regression techniques lies in the way the penalty term is defined into the cost function.
+\noindent In Lasso regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by
+the norm-1 vector $\sum_{i} 
 |\boldsymbol{\beta_i}|$, leading to a nonlinear solution of $y_i$. (Kilde 1AM)
 
-\noindent The cost function for Lasso is shown under in equation \eqref{cost_function_Lasso}. 
+\noindent The cost function for Lasso is shown under in equation \ref{eq:cost_function_Lasso}. 
 
-\begin{equation} 
-    C(X,\beta)_\text{Lasso} =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda||\boldsymbol{\beta}||_1 \label{cost_function_Lasso} 
+\begin{equation}\label{eq:cost_function_Lasso}
+    C(X,\beta)_\text{Lasso} =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda||\boldsymbol{\beta}||_1  
 \end{equation}
 
 \noindent where $||\boldsymbol{\beta}||_1 = \sum_{i} |\boldsymbol{\beta_i}|$ which is found by taking the derivative with respect to $\boldsymbol{\beta}$ (Kilde 1AM), 
 
-\begin{equation}
+\begin{equation}\label{eq: optimal_lasso}
     \mathbf{X}^T\mathbf{X}\boldsymbol{\beta} + \lambda sgn(\boldsymbol{\beta}) = 2\mathbf{X}^T\boldsymbol{y} \label{eq: optimal_lasso}
 \end{equation}
 
-\noindent Lasso does not yield a closed-form expression due to a non linear solution, necessitating a numerical approach for its determination. 
-This method is essential in regression analysis because it carefully balance precision and clarity by penalizing the absolute size of regression coefficients.(Kilde 2AM)
+\noindent MSE measures the average of the squared differences between predicted values and actual outcomes. Therefore, the smaller the
+value, the better the fit between the predictions and reality. Since the MSE value comes from the square of the errors between the actual
+values and the predicted values, it cannot be negative. A perfect fit between the predictions and reality would yield an MSE value equal
+to zero (Kilde 3AM). A negative side to MSE is that it is not scaled. Outliers will thus contribute the same amount as any other point,
+which can lead to an skewed MSE value. 
 
+\subsubsection{$R^2$-Score}
 
-\subsection{MSE}
+\noindent The $R^2$-score function is a popular error metric that computes the coefficient of determination, which indicates how
+accurately a model can predict future samples. The score typically ranges from 0 to 1, but it can also be negative. A score of 1 indicates
+a perfect fit, while a negative value indicates an inadequate model. A constant model that always predicts the expected value of the target
+variable, regardless of the input features, would receive an $R^2$-score of 0. (Kilde 3AM).
+
+\noindent The $R^2$-score is defined as 
+
+\begin{equation}\label{eqR2} 
+R^2(\boldsymbol{y}, \tilde{\boldsymbol{y}}) = 1 - \frac{\sum_{i=0}^{n - 1} (y_i - \tilde{y}_i)^2}{\sum_{i=0}^{n - 1} (y_i - \bar{y})^2}
+\end{equation}
+
+\noindent where where we have defined the mean value of $\boldsymbol{y}$ as
+
+\begin{equation} 
+\bar{y} =  \frac{1}{n} \sum_{i=0}^{n - 1} y_i.
+\end{equation}
+
 
 
 \subsection{Resampling techniques}
@@ -178,10 +201,13 @@ One huge advatange of using the boostrap method is that the data can be split in
 test and train before shuffeling the data, this means that the test data can be kept 
 entirely separate from the creation of the model. When we den test the model it will
 be on a dataset that has nothing to do with crating the model and will therfore show
-how god the model represent real data. 
-%\newline
-\textbf{Write something about large numbers law, also disadvantages and advantage}
-%\newline
+how god the model represent real data. We draw samples from the same training set, to 
+generate new dataset, and calculate the mean square error of each prediction. The initial 
+distibution of our data is not known, however, when the sample size is large the mean 
+square error will follow a normal distibution. The Central Limit theorem \cite{JAY2021CLT} states that for a 
+large number of samples the law of large numbers \cite{JAY2021LLN} ensures the value of the mean converges toward the sample mean. 
+When we are calculating the mean square error of our models prediction it will follow a 
+normal distribution, and will be independent of distribution of the training data.
 
 
 \subsubsection{Cross validation}
@@ -205,5 +231,9 @@ In the context of our study, CV aids in parameter tuning, especially for models 
 
 
 \subsection{Bias-variance trade-off}
-The Bias-varinace trade-off is a measuerment on how accuratly a model fit the real data.
+The Bias-varinace trade-off is a measuerment on how accuratly a model fit the real data. We can use the expression for expected value of 
+the mean square error as a trade-off, using equation \ref{eq:bias_variance} for a continous function we get 
+\begin{align}\label{eq:trade_off}
+    \mathbb{E}((\boldsymbol{y} - \boldsymbol{\tilde{y}})^{2}) &= \mathbb{E}((f(\boldsymbol{x}) - \mathbb{E}(\boldsymbol{\tilde{y}}))^{2}) + \mathbb{V}(\boldsymbol{\tilde{y}}) + \sigma^{2}
+\end{align}
 
