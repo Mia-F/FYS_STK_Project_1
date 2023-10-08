@@ -123,7 +123,7 @@ methods work towards minimizing the residual sum of squares while simultaneously
 between these regression techniques lies in the way the penalty term is defined into the cost function.
 \noindent In Lasso regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by
 the norm-1 vector $\sum_{i} 
-|\boldsymbol{\beta_i}|$, leading to a nonlinear solution of $y_i$. (Kilde 1AM)
+|\boldsymbol{\beta_i}|$, leading to a nonlinear solution of $y_i$ \cite{SpringerCh3}.
 
 \noindent The cost function for Lasso is shown under in equation \ref{eq:cost_function_Lasso}. 
 
@@ -131,7 +131,7 @@ the norm-1 vector $\sum_{i}
     C(X,\beta)_\text{Lasso} =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda||\boldsymbol{\beta}||_1  
 \end{equation}
 
-\noindent where $||\boldsymbol{\beta}||_1 = \sum_{i} |\boldsymbol{\beta_i}|$ which is found by taking the derivative with respect to $\boldsymbol{\beta}$ (Kilde 1AM), 
+\noindent where $||\boldsymbol{\beta}||_1 = \sum_{i} |\boldsymbol{\beta_i}|$ which is found by taking the derivative with respect to $\boldsymbol{\beta}$ \cite{SpringerCh3}, 
 
 \begin{equation}\label{eq:optimal_lasso}
     \mathbf{X}^T\mathbf{X}\boldsymbol{\beta} + \lambda sgn(\boldsymbol{\beta}) = 2\mathbf{X}^T\boldsymbol{y} 
@@ -140,12 +140,12 @@ the norm-1 vector $\sum_{i}
 \noindent Lasso does not yield a closed-form expression due to a non linear solution, necessitating a numerical approach for its
 determination. 
 This method is essential in regression analysis because it carefully balance precision and clarity by penalizing the absolute size of
-regression coefficients.(Kilde 2AM)
+regression coefficients \cite{Wessel}.
 
 \subsection{Model evaluation methods}
 \subsubsection{Mean Square Error}
 
-\noindent Mean Squared Error,abbreviated MSE, is a commonly used risk metric that corresponds to the expected value of the squared (quadratic) error or loss (Kilde 3AM). It is defined as 
+\noindent Mean Squared Error,abbreviated MSE, is a commonly used risk metric that corresponds to the expected value of the squared (quadratic) error or loss \cite{Week34}. It is defined as 
 
 \begin{equation}\label{eq:MSE} 
  MSE(\boldsymbol{y},\tilde{\boldsymbol{y}}) = \frac{1}{n} \sum_{i=0}^{n-1}(y_i \tilde{y}_i)^2
@@ -154,7 +154,7 @@ regression coefficients.(Kilde 2AM)
 \noindent MSE measures the average of the squared differences between predicted values and actual outcomes. Therefore, the smaller the
 value, the better the fit between the predictions and reality. Since the MSE value comes from the square of the errors between the actual
 values and the predicted values, it cannot be negative. A perfect fit between the predictions and reality would yield an MSE value equal
-to zero (Kilde 3AM). A negative side to MSE is that it is not scaled. Outliers will thus contribute the same amount as any other point,
+to zero \cite{Week34}. A negative side to MSE is that it is not scaled. Outliers will thus contribute the same amount as any other point,
 which can lead to an skewed MSE value. 
 
 \subsubsection{$R^2$-Score}
@@ -162,7 +162,7 @@ which can lead to an skewed MSE value.
 \noindent The $R^2$-score function is a popular error metric that computes the coefficient of determination, which indicates how
 accurately a model can predict future samples. The score typically ranges from 0 to 1, but it can also be negative. A score of 1 indicates
 a perfect fit, while a negative value indicates an inadequate model. A constant model that always predicts the expected value of the target
-variable, regardless of the input features, would receive an $R^2$-score of 0. (Kilde 3AM).
+variable, regardless of the input features, would receive an $R^2$-score of 0 \cite{Week34}.
 
 \noindent The $R^2$-score is defined as 
 
