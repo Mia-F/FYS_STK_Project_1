@@ -20,6 +20,7 @@ params = {
     "axes.labelsize": "large",
     "xtick.labelsize": "large",
     "ytick.labelsize": "large",
+<<<<<<< HEAD
     "legend.fontsize": "large"
 }
 plt.rcParams.update(params)
@@ -28,6 +29,17 @@ np.random.seed(2023)
 n = 50
 degree = np.linspace(0,5,6, dtype=int)
 alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1.0]
+=======
+    "legend.fontsize": "large"}
+plt.rcParams.update(params)
+
+
+np.random.seed(2023)
+n = 50
+degree = np.linspace(0,5,6, dtype=int)
+#alphas  = np.logspace(-8, 2, 1000)
+alphas = [0.0001, 0.001, 0.01, 0.1, 1.0]
+>>>>>>> edaa2f3ba4f8e2a6aefbbee0b18216b7d71d01cf
 
 
 x = np.sort(np.random.uniform(0, 1, n))
@@ -194,5 +206,31 @@ ax.legend()
 # plt.plot(np.log10(alphas), mse_error_Lasso_train, label="MSE train")
 # plt.plot(np.log10(alphas), mse_error_Lasso_test, label="MSE test")
 plt.show()
+
+# Plotting MSE vs Degrees for different alpha values.
+# plt.figure(figsize=(15, 8))
+# for i, alpha in enumerate(alphas):
+#     plt.plot(degree, mse_error_Lasso_train[:, i], label=rf'$\lambda$ = $10^{{{int(np.log10(alpha))}}}$', linestyle=':')
+#     plt.plot(degree, mse_error_Lasso_test[:, i], label=rf'$\lambda$ = $10^{{{int(np.log10(alpha))}}}$', linestyle='-' )
+
+# plt.xlabel('Degree')
+# plt.ylabel('Mean Squared Error (MSE)')
+# plt.title('MSE vs. Degrees for different Alpha values (Lasso)')
+# plt.legend()
+# plt.grid(True)
+# plt.show()
+
+# # Plotting R2 vs Degrees for different alpha values.
+# plt.figure(figsize=(12, 6))
+# for i, alpha in enumerate(alphas):
+#     plt.plot(degree, r2_score_Lasso_train[:, i], label=rf'$\lambda$ = $10^{{{int(np.log10(alpha))}}}$', linestyle=':' )
+#     plt.plot(degree, r2_score_Lasso_test[:, i], label=rf'$\lambda$ = $10^{{{int(np.log10(alpha))}}}$', linestyle='-' )
+
+# plt.xlabel('Degree')
+# plt.ylabel('R-squared (R2)')
+# plt.title('R2 vs. Degrees for different Alpha values (Lasso)')
+# plt.legend()
+# plt.grid(True)
+# plt.show()
 
 
