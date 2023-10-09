@@ -53,7 +53,8 @@ r2_score_Lasso_test = np.zeros((len(degree),len(alphas)))
 
 for d in range(len(degree)):
     X = design_matrix(x, y, d)
-    X_train, X_test, y_train, y_test = train_test_split(X, f.flatten(), test_size=0.2)
+    #X_train, X_test, y_train, y_test = train_test_split(X, f.flatten(), test_size=0.2)
+    X_train, X_test, y_train, y_test = train_test_split(X, f, test_size=0.2)
   
     for i, alpha in tqdm(enumerate(alphas)):
         # Create and fit the Lasso regression model
