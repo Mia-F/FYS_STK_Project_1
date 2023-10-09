@@ -20,16 +20,6 @@ params = {
     "axes.labelsize": "large",
     "xtick.labelsize": "large",
     "ytick.labelsize": "large",
-<<<<<<< HEAD
-    "legend.fontsize": "large"
-}
-plt.rcParams.update(params)
-
-np.random.seed(2023)
-n = 50
-degree = np.linspace(0,5,6, dtype=int)
-alphas = [0.00001, 0.0001, 0.001, 0.01, 0.1, 1.0]
-=======
     "legend.fontsize": "large"}
 plt.rcParams.update(params)
 
@@ -39,7 +29,6 @@ n = 50
 degree = np.linspace(0,5,6, dtype=int)
 #alphas  = np.logspace(-8, 2, 1000)
 alphas = [0.0001, 0.001, 0.01, 0.1, 1.0]
->>>>>>> edaa2f3ba4f8e2a6aefbbee0b18216b7d71d01cf
 
 
 x = np.sort(np.random.uniform(0, 1, n))
