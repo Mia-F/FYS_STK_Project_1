@@ -19,6 +19,19 @@ from tqdm import tqdm
 # from part_a import Franke_function, design_matrix
 
 sns.set_theme()
+params = {
+    "font.family": "Serif",
+    "font.serif": "Roman", 
+    "text.usetex": True,
+    "axes.titlesize": "large",
+    "axes.labelsize": "large",
+    "xtick.labelsize": "large",
+    "ytick.labelsize": "large",
+    "legend.fontsize": "large"
+}
+plt.rcParams.update(params)
+
+
 
 def Franke_function(x,y, noise_factor=0):
     """
@@ -115,8 +128,9 @@ def mse(z_data, z_model):
 
 
 def plot_3d(x, y, z):
+    colors = sns.color_palette("twilight", as_cmap=True)
     fig, ax = plt.subplots(subplot_kw={"projection": "3d"})
-    surf = ax.plot_surface(x, y, z, cmap=cm.winter, linewidth=0, antialiased=False)
+    surf = ax.plot_surface(x, y, z, cmap=colors, linewidth=0, antialiased=False)
 
     ax.set_zlim(-0.10, 1.40)
     ax.zaxis.set_major_locator(LinearLocator(10))
@@ -353,42 +367,45 @@ if __name__ == '__main__':
     y.ravel()
     z = Franke_function(x, y, noise_factor=1)
 
+    plot_3d(x, y, z)
+
     # Real data
     # x, y, z = load_real_data(n)
 
     # degrees = np.zeros(max_degree)
-    error = np.zeros(max_degree)
-    error_train = np.zeros(max_degree)
-    error_test = np.zeros(max_degree)
-    bias = np.zeros(max_degree)
-    variance = np.zeros(max_degree)
+    # error = np.zeros(max_degree)
+    # error_train = np.zeros(max_degree)
+    # error_test = np.zeros(max_degree)
+    # bias = np.zeros(max_degree)
+    # variance = np.zeros(max_degree)
 
 
-    for i in range(max_degree):
-        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
+    # for i in range(max_degree):
+    #     error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
         # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
 
     # error_sum = bias + variance
-    fig1, ax1 = plt.subplots()
-    fig2, ax2 = plt.subplots()
+    # colors = sns.color_palette("husl", as_cmap=True)
+    # fig1, ax1 = plt.subplots()
+    # fig2, ax2 = plt.subplots()
 
-    ax1.plot(degrees, error_train, label='Train error')
-    ax1.plot(degrees, error_test, label='Test error')
+    # ax1.plot(degrees, error_train, label='Train error', color=colors[0])
+    # ax1.plot(degrees, error_test, label='Test error', color=colors[1])
 
-    ax2.plot(degrees, error_test, label='Error')
-    ax2.plot(degrees, bias, 'b--', label='Bias')
-    ax2.plot(degrees, variance, 'r--', label='Variance')
-    # ax.set_xscale('log')
-    ax1.set_yscale('log')
-    ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    ax1.legend()
-    fig1.savefig("../LaTeX/Images/bootstrap_error.png")
-    ax2.set_yscale('log')
-    ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    ax2.legend()
-    fig2.savefig("../LaTeX/Images/bias_variance.png")
+    # ax2.plot(degrees, error_test, label='Error', color=colors[1])
+    # ax2.plot(degrees, bias, label='Bias', color=colors[2])
+    # ax2.plot(degrees, variance, label='Variance', color=colors[3])
+    # # ax.set_xscale('log')
+    # ax1.set_yscale('log')
+    # ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    # ax1.legend(loc='lower right')
+    # fig1.savefig("../LaTeX/Images/bootstrap_error.png")
+    # ax2.set_yscale('log')
+    # ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    # ax2.legend(loc='lower right')
+    # fig2.savefig("../LaTeX/Images/bias_variance.png")
 
     # lambdas = np.logspace(-8, 0, 9)
     # l = len(lambdas)
