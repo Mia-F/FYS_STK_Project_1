@@ -90,7 +90,7 @@ def beta_ridge(X, y, lamb):
     return (np.linalg.pinv(X.T @ X + lamb * np.identity(len(X[0]))) @ X.T @ y)
 
 
-def franke_function(x, y, noise=False, noise_factor=0.1):
+def franke_function(x, y, noise=False):
     t1 = 0.75 * np.exp(-(0.25 * (9*x - 2)**2) - (0.25 * (9*y - 2)**2))
     t2 = 0.75 * np.exp(-((9*x + 1)**2 / 49.0) - (0.1 * (9*y + 1)))
     t3 = 0.5 * np.exp(-(0.25 * (9*x - 7)**2) - (0.25 * (9*y - 3)**2))
@@ -98,10 +98,11 @@ def franke_function(x, y, noise=False, noise_factor=0.1):
     result = t1 + t2 + t3 + t4
 
     if noise == True:
-        m, n = x.shape
-        result += noise_factor * np.random.normal(0.0, 1.0, m*n).reshape(m, n)
+        noise_val = np.random.normal(0, 0.1, len(x)*len(y)) 
+        noise_val = noise_val.reshape(len(x),len(y))
+        result += noise_val
 
-    return result.reshape(-1, 1)
+    return result
 
 
 def d_matrix(x, y, degree):
@@ -365,47 +366,63 @@ if __name__ == '__main__':
     # Franke
     x.ravel()
     y.ravel()
-    z = Franke_function(x, y, noise_factor=1)
+    z = Franke_function(x, y, noise_factor=0)
+    z_noise = Franke_function(x, y, noise_factor=1)
 
-    plot_3d(x, y, z)
+    # plot_3d(x, y, z)
 
     # Real data
     # x, y, z = load_real_data(n)
 
     # degrees = np.zeros(max_degree)
     # error = np.zeros(max_degree)
-    # error_train = np.zeros(max_degree)
-    # error_test = np.zeros(max_degree)
-    # bias = np.zeros(max_degree)
-    # variance = np.zeros(max_degree)
+    error_train = np.zeros(max_degree)
+    error_test = np.zeros(max_degree)
+    bias = np.zeros(max_degree)
+    variance = np.zeros(max_degree)
+
+    error_train_noise = np.zeros(max_degree)
+    error_test_noise = np.zeros(max_degree)
+    bias_noise = np.zeros(max_degree)
+    variance_noise = np.zeros(max_degree)
 
 
-    # for i in range(max_degree):
-    #     error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
+    for i in range(max_degree):
+        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
+        error_train_noise[i], error_test_noise[i], bias_noise[i], variance_noise[i] = bootstrap_ols(x, y, z_noise, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
         # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
 
     # error_sum = bias + variance
-    # colors = sns.color_palette("husl", as_cmap=True)
-    # fig1, ax1 = plt.subplots()
-    # fig2, ax2 = plt.subplots()
+    colors = sns.color_palette("tab10", n_colors=6)
+    fig1, ax1 = plt.subplots()
+    fig2, ax2 = plt.subplots()
 
-    # ax1.plot(degrees, error_train, label='Train error', color=colors[0])
-    # ax1.plot(degrees, error_test, label='Test error', color=colors[1])
+    # Franke function without noise
+    ax1.plot(degrees, error_train, color=colors[0], linestyle='--')
+    ax1.plot(degrees, error_test, color=colors[1], linestyle='--')
+    # Franke function with noise
+    ax1.plot(degrees, error_train_noise, label='Train', color=colors[0])
+    ax1.plot(degrees, error_test_noise, label='Test', color=colors[1])
 
-    # ax2.plot(degrees, error_test, label='Error', color=colors[1])
-    # ax2.plot(degrees, bias, label='Bias', color=colors[2])
-    # ax2.plot(degrees, variance, label='Variance', color=colors[3])
-    # # ax.set_xscale('log')
-    # ax1.set_yscale('log')
-    # ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    # ax1.legend(loc='lower right')
-    # fig1.savefig("../LaTeX/Images/bootstrap_error.png")
-    # ax2.set_yscale('log')
-    # ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    # ax2.legend(loc='lower right')
-    # fig2.savefig("../LaTeX/Images/bias_variance.png")
+    # Franke function without noise
+    ax2.plot(degrees, error_test, color=colors[1], linestyle='--')
+    ax2.plot(degrees, bias, color=colors[2], linestyle='--')
+    ax2.plot(degrees, variance, color=colors[3], linestyle='--')
+
+    ax2.plot(degrees, error_test_noise, label='Error', color=colors[1])
+    ax2.plot(degrees, bias_noise, label='Bias', color=colors[2])
+    ax2.plot(degrees, variance_noise, label='Variance', color=colors[3])
+    # ax.set_xscale('log')
+    ax1.set_yscale('log')
+    ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax1.legend(loc='upper left')
+    fig1.savefig("../LaTeX/Images/bootstrap_error.png")
+    ax2.set_yscale('log')
+    ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax2.legend(loc='upper left')
+    fig2.savefig("../LaTeX/Images/bias_variance.png")
 
     # lambdas = np.logspace(-8, 0, 9)
     # l = len(lambdas)
