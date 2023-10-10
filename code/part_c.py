@@ -70,6 +70,27 @@ for d in range(len(degree)):
         mse_error_Lasso_test[d][i] = MSE(y_test, model_test)
         r2_score_Lasso_test[d][i] = R2(y_test, model_test)
 
+#Plot for MSE and R2 values
+fig, ax1 = plt.subplots()
+ax1.set_xlabel('Degrees')
+ax1.set_ylabel('MSE')
+ax1.plot(degree, mse_error_Lasso_train[:, 1], label='MSE Train')
+ax1.plot(degree, mse_error_Lasso_test[:, 1], label='MSE Test')
+
+ax2 = ax1.twinx()
+ax2.set_ylabel('R2 Score')
+ax2.plot(degree, r2_score_Lasso_train[:, 1], label='R2 Train')
+ax2.plot(degree, r2_score_Lasso_test[:, 1], label='R2 Test')
+
+lines, labels = ax1.get_legend_handles_labels()
+lines2, labels2 = ax2.get_legend_handles_labels()
+ax2.legend(lines + lines2, labels + labels2, loc='upper right')
+
+fig.tight_layout()
+plt.show()
+
+
+
 #  plt.title(r"Heatmap of the MSE for the training data as a fucntion of $\lambda$ values and complexity")
 # plt.imshow(mse_error_Lasso_train, aspect='auto')
 # plt.grid()
@@ -87,12 +108,12 @@ for d in range(len(degree)):
 # plt.show()
 #best_alpha = alphas[np.argmin(mse_error_Lasso_test)]
 #print("Best alpha:", best_alpha)
-colors = sns.color_palette("twilight", n_colors=len(alphas))
+#colors = sns.color_palette("twilight", n_colors=len(alphas))
 # Plot the results
-fig, ax = plt.subplots()
-for i, alpha in enumerate(alphas):
-    plt.plot(degree, mse_error_Lasso_train[:, i], linestyle='--', color=colors[i])
-    plt.plot(degree, mse_error_Lasso_test[:, i], label=rf'$\lambda = {alpha:G}$', color=colors[i])
+#fig, ax = plt.subplots()
+#for i, alpha in enumerate(alphas):
+    #plt.plot(degree, mse_error_Lasso_train[:, i], linestyle='--', color=colors[i])
+    #plt.plot(degree, mse_error_Lasso_test[:, i], label=rf'$\lambda = {alpha:G}$', color=colors[i])
 # ax.semilogx(alphas, mse_error_Lasso_train[0][:], label="MSE Lasso (Train)", color="tab:blue")
 # ax.semilogx(alphas, r2_score_Lasso_train[0][:], label="R2 Lasso (Train)", color="tab:orange")
 # ax.semilogx(alphas, mse_error_Lasso_test[0][:], label="MSE Lasso (Test)", color="tab:green")
@@ -100,7 +121,7 @@ for i, alpha in enumerate(alphas):
 # ax.set_title("MSE and R2 scores for Lasso with different polynomial degrees")
 # ax.set_xlabel("Alphas")
 # ax.set_ylabel("MSE and R2 values")
-ax.legend()
+#ax.legend()
 # plt.show()
 # fig, ax = plt.subplots()
 # ax.semilogx(alphas, mse_error_Lasso_train[1][:], label="MSE Lasso (Train)", color="tab:blue")
@@ -195,7 +216,7 @@ ax.legend()
 
 # plt.plot(np.log10(alphas), mse_error_Lasso_train, label="MSE train")
 # plt.plot(np.log10(alphas), mse_error_Lasso_test, label="MSE test")
-plt.show()
+#plt.show()
 
 # Plotting MSE vs Degrees for different alpha values.
 # plt.figure(figsize=(15, 8))
