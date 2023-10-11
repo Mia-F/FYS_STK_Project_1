@@ -2,6 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.linear_model import Ridge, Lasso
 import seaborn as sns
+import warnings
+warnings.filterwarnings('ignore')
 
 # Seaborn style setting
 sns.set_theme()
@@ -22,6 +24,17 @@ def design_matrix(x, y, degree):
             X[:, q + k] = (x**(i - k)) * (y**k)
     return X
 
+def Franke_function(x, y, noise=False):
+    term1 = 0.75*np.exp(-(0.25*(9*x-2)**2) - 0.25*((9*y-2)**2))
+    term2 = 0.75*np.exp(-((9*x+1)**2)/49.0 - 0.1*(9*y+1))
+    term3 = 0.5*np.exp(-(9*x-7)**2/4.0 - 0.25*((9*y-3)**2))
+    term4 = -0.2*np.exp(-(9*x-4)**2 - (9*y-7)**2)
+    if noise:
+        noise_val = np.random.normal(0, 0.1, len(x))
+        return term1 + term2 + term3 + term4 + noise_val
+    else:
+        return term1 + term2 + term3 + term4
+
 def k_fold(data, k):
     n_samples = len(data)
     fold_size = n_samples // k
@@ -36,17 +49,17 @@ def k_fold(data, k):
         k_fold_indices.append((train_indices, test_indices))
     return k_fold_indices
 
-# Seed and data generation
 np.random.seed(2024)
 nsamples = 100
 x = np.random.rand(nsamples)
-y = 3 * x ** 2 + np.random.randn(nsamples)
-data = np.column_stack((x, y))
+y = np.random.rand(nsamples)
+z = Franke_function(x, y, noise=True)
+data = np.column_stack((x, y, z))
 
 # Lambda values and colors
-nlambdas = 6  # reduced for better visualization
-lambdas = np.logspace(-3, 3, nlambdas)
-colors = sns.color_palette("husl", nlambdas)  # using seaborn color palette
+nlambdas = 6  
+lambdas = np.logspace(-8, 2, nlambdas)
+colors = sns.color_palette("husl", nlambdas)
 
 # Degree setting
 max_degree = 15
@@ -61,22 +74,21 @@ for i, lmb in enumerate(lambdas):
         scores_KFold = np.zeros(k)
         k_fold_indices = k_fold(data, k)
         for j, (train_indices, test_indices) in enumerate(k_fold_indices):
-            xtrain, ytrain = data[train_indices, 0], data[train_indices, 1]
-            xtest, ytest = data[test_indices, 0], data[test_indices, 1]
-            Xtrain = design_matrix(xtrain, ytrain, degree=degree)
+            train, test = data[train_indices], data[test_indices]
+            Xtrain = design_matrix(train[:,0], train[:,1], degree=degree)
             ridge = Ridge(alpha=lmb)
-            ridge.fit(Xtrain, ytrain)
-            Xtest = design_matrix(xtest, ytest, degree=degree)
-            ypred = ridge.predict(Xtest)
-            scores_KFold[j] = np.mean((ypred.ravel() - ytest) ** 2)
+            ridge.fit(Xtrain, train[:,2])
+            Xtest = design_matrix(test[:,0], test[:,1], degree=degree)
+            zpred = ridge.predict(Xtest)
+            scores_KFold[j] = np.mean((zpred.ravel() - test[:,2]) ** 2)
         mse_per_degree_ridge.append(np.mean(scores_KFold))
     plt.plot(degrees, mse_per_degree_ridge, marker='o', color=colors[i], label=f'Ridge, λ={lmb:.1e}')
 
 plt.xlabel('Degree')
 plt.ylabel('MSE (log scale)')
-plt.yscale('log')  # setting y-axis to log scale
+plt.yscale('log')
 plt.legend()
-#plt.savefig('Ridge_crossval_mse_deg')
+plt.savefig('Ridge_crossval_mse_deg')
 plt.show()
 
 # Lasso Regression
@@ -87,20 +99,19 @@ for i, lmb in enumerate(lambdas):
         scores_KFold = np.zeros(k)
         k_fold_indices = k_fold(data, k)
         for j, (train_indices, test_indices) in enumerate(k_fold_indices):
-            xtrain, ytrain = data[train_indices, 0], data[train_indices, 1]
-            xtest, ytest = data[test_indices, 0], data[test_indices, 1]
-            Xtrain = design_matrix(xtrain, ytrain, degree=degree)
+            train, test = data[train_indices], data[test_indices]
+            Xtrain = design_matrix(train[:,0], train[:,1], degree=degree)
             lasso = Lasso(alpha=lmb, max_iter=10000)
-            lasso.fit(Xtrain, ytrain)
-            Xtest = design_matrix(xtest, ytest, degree=degree)
-            ypred = lasso.predict(Xtest)
-            scores_KFold[j] = np.mean((ypred.ravel() - ytest) ** 2)
+            lasso.fit(Xtrain, train[:,2])
+            Xtest = design_matrix(test[:,0], test[:,1], degree=degree)
+            zpred = lasso.predict(Xtest)
+            scores_KFold[j] = np.mean((zpred.ravel() - test[:,2]) ** 2)
         mse_per_degree_lasso.append(np.mean(scores_KFold))
     plt.plot(degrees, mse_per_degree_lasso, marker='o', color=colors[i], label=f'Lasso, λ={lmb:.1e}')
 
 plt.xlabel('Degree')
 plt.ylabel('MSE (log scale)')
-plt.yscale('log')  # setting y-axis to log scale
+plt.yscale('log')
 plt.legend()
-#plt.savefig('Lasso_crossval_mse_deg')
+plt.savefig('Lasso_crossval_mse_deg')
 plt.show()
