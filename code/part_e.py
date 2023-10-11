@@ -17,7 +17,6 @@ from matplotlib import cm
 from tqdm import tqdm
 
 # from part_a import Franke_function, design_matrix
-
 sns.set_theme()
 params = {
     "font.family": "Serif",
@@ -30,6 +29,7 @@ params = {
     "legend.fontsize": "large"
 }
 plt.rcParams.update(params)
+
 
 
 
@@ -126,6 +126,21 @@ def d_matrix(x, y, degree):
 
 def mse(z_data, z_model):
     return np.sum((z_data - z_model)**2) / len(z_data)
+
+
+def k_fold(data, k):
+    n_samples = len(data)
+    fold_size = n_samples // k
+    indices = np.arange(n_samples)
+    np.random.shuffle(indices)
+    k_fold_indices = []
+    for i in range(k):
+        test_start = i * fold_size
+        test_end = (i + 1) * fold_size
+        test_indices = indices[test_start:test_end]
+        train_indices = np.concatenate([indices[:test_start], indices[test_end:]])
+        k_fold_indices.append((train_indices, test_indices))
+    return k_fold_indices
 
 
 def plot_3d(x, y, z):
@@ -353,14 +368,60 @@ def ols_error_plot(x, y, z, max_degree):
     ax.set_yscale('log')
     ax.legend()
 
+
+def crossval_ols(x, y, z, degree, k):
+    x_data = design_matrix(x, y, degree)
+    z_data = z.flatten()
+    scores_KFold_train = np.zeros(k)
+    scores_KFold_test = np.zeros(k)
+    k_fold_indices = k_fold(x_data, k)
+    for j, (train_indices, test_indices) in enumerate(k_fold_indices):
+        X_train, X_test = x_data[train_indices], x_data[test_indices]
+        y_train, y_test = z_data[train_indices], z_data[test_indices]
+        beta_ols = beta_OLS(X_train, y_train)
+
+        y_tilde = (X_train @ beta_ols).ravel()
+        y_predict = (X_test @ beta_ols).ravel()
+        scores_KFold_train[j] = mse(y_train.flatten(), y_tilde)
+        scores_KFold_test[j] = mse(y_test.flatten(), y_predict)
+    mse_train_ols = np.mean(scores_KFold_train)
+    mse_test_ols = np.mean(scores_KFold_test)
+
+    return (mse_train_ols, mse_test_ols)
+
+
+def crossval_ridge(x, y, z, degree, k, lamb):
+    x_data = design_matrix(x, y, degree)
+    z_data = z.flatten()
+    scores_KFold_train = np.zeros(k)
+    scores_KFold_test = np.zeros(k)
+    k_fold_indices = k_fold(x_data, k)
+    for j, (train_indices, test_indices) in enumerate(k_fold_indices):
+        X_train, X_test = x_data[train_indices], x_data[test_indices]
+        y_train, y_test = z_data[train_indices], z_data[test_indices]
+
+        beta = beta_ridge(X_train, y_train, lamb)
+        y_tilde = (X_train @ beta).ravel()
+        y_predict = (X_test @ beta).ravel()
+
+        scores_KFold_train[j] = mse(y_train.flatten(), y_tilde)
+        scores_KFold_test[j] = mse(y_test.flatten(), y_predict)
+
+    mse_train_ols = np.mean(scores_KFold_train)
+    mse_test_ols = np.mean(scores_KFold_test)
+
+    return (mse_train_ols, mse_test_ols)
+    
+
 if __name__ == '__main__':
     np.random.seed(2023)
     n = 20
+    k = 5
     max_degree = 15
     degrees = np.arange(1, max_degree+1, 1, dtype=np.int32)
 
-    x_ = np.linspace(0, 1, n)
-    y_ = np.linspace(0, 1, n)
+    x_ = np.sort(np.random.uniform(0, 1, n))
+    y_ = np.sort(np.random.uniform(0, 1, n))
     x, y = np.meshgrid(x_, y_)
 
     # Franke
@@ -386,10 +447,32 @@ if __name__ == '__main__':
     bias_noise = np.zeros(max_degree)
     variance_noise = np.zeros(max_degree)
 
+    error_train_cv = np.zeros(max_degree)
+    error_test_cv = np.zeros(max_degree)
+
+    error_train_noise_cv = np.zeros(max_degree)
+    error_test_noise_cv = np.zeros(max_degree)
+
+    # Ridge
+    n_lambdas = 6  
+    lambdas = np.logspace(-8, 2, n_lambdas)
+    colors_ridge = sns.color_palette("tab10", n_lambdas)
+
+    error_train_ridge = np.zeros((max_degree, n_lambdas))
+    error_test_ridge = np.zeros((max_degree, n_lambdas))
+
+    error_train_ridge_noise = np.zeros((max_degree, n_lambdas))
+    error_test_ridge_noise = np.zeros((max_degree, n_lambdas))
+
 
     for i in range(max_degree):
         error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
         error_train_noise[i], error_test_noise[i], bias_noise[i], variance_noise[i] = bootstrap_ols(x, y, z_noise, i+1, 100)
+        error_train_cv[i], error_test_cv[i] = crossval_ols(x, y, z, i+1, k)
+        error_train_noise_cv[i], error_test_noise_cv[i] = crossval_ols(x, y, z_noise, i+1, k)
+        for j in range(n_lambdas):
+            error_train_ridge[i, j], error_test_ridge[i, j] = crossval_ridge(x, y, z, i+1, k, lambdas[j])
+            error_train_ridge_noise[i, j], error_test_ridge_noise[i, j] = crossval_ridge(x, y, z_noise, i+1, k, lambdas[j])
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
         # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
@@ -398,6 +481,8 @@ if __name__ == '__main__':
     colors = sns.color_palette("tab10", n_colors=6)
     fig1, ax1 = plt.subplots()
     fig2, ax2 = plt.subplots()
+    fig3, ax3 = plt.subplots()
+    fig4, ax4 = plt.subplots()
 
     # Franke function without noise
     ax1.plot(degrees, error_train, color=colors[0], linestyle='--')
@@ -405,6 +490,13 @@ if __name__ == '__main__':
     # Franke function with noise
     ax1.plot(degrees, error_train_noise, label='Train', color=colors[0])
     ax1.plot(degrees, error_test_noise, label='Test', color=colors[1])
+
+    ax1.set_xlabel("Polynomial degree")
+    ax1.set_yscale('log')
+    ax1.set_ylabel("MSE")
+    ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax1.legend(loc='upper left')
+    fig1.savefig("../LaTeX/Images/bootstrap_error.png")
 
     # Franke function without noise
     ax2.plot(degrees, error_test, color=colors[1], linestyle='--')
@@ -415,14 +507,34 @@ if __name__ == '__main__':
     ax2.plot(degrees, bias_noise, label='Bias', color=colors[2])
     ax2.plot(degrees, variance_noise, label='Variance', color=colors[3])
     # ax.set_xscale('log')
-    ax1.set_yscale('log')
-    ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    ax1.legend(loc='upper left')
-    fig1.savefig("../LaTeX/Images/bootstrap_error.png")
+    ax2.set_xlabel("Polynomial degree")
     ax2.set_yscale('log')
+    ax2.set_ylabel("MSE")
     ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax2.legend(loc='upper left')
     fig2.savefig("../LaTeX/Images/bias_variance.png")
+
+    ax3.plot(degrees, error_test, color=colors[1], linestyle='--')
+    ax3.plot(degrees, error_test_cv, color=colors[2], linestyle='--')
+    ax3.plot(degrees, error_test_noise, color=colors[1], label='Bootstrap')
+    ax3.plot(degrees, error_test_noise_cv, color=colors[2], label='CV')
+
+    ax3.set_xlabel("Polynomial degree")
+    ax3.set_yscale('log')
+    ax3.set_ylabel("MSE")
+    ax3.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax3.legend(loc='upper left')
+    fig3.savefig("../LaTeX/Images/bootstrap_cv.png")
+
+    for j in range(n_lambdas):
+        ax4.plot(degrees, error_train_ridge_noise[:, j], label=rf'$\lambda = ${lambdas[j]}', color=colors_ridge[j])
+    
+    ax4.set_xlabel("Polynomial degree")
+    ax4.set_yscale('log')
+    ax4.set_ylabel("MSE")
+    ax4.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax4.legend(loc='upper left')
+    fig4.savefig("../LaTeX/Images/cv_ridge.png")
 
     # lambdas = np.logspace(-8, 0, 9)
     # l = len(lambdas)
