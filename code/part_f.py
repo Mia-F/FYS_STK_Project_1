@@ -58,7 +58,7 @@ data = np.column_stack((x, y, z))
 
 # Lambda values and colors
 nlambdas = 6  
-lambdas = np.logspace(-3, 3, nlambdas)
+lambdas = np.logspace(-8, 2, nlambdas)
 colors = sns.color_palette("husl", nlambdas)
 
 # Degree setting
