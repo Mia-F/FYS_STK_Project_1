@@ -8,7 +8,7 @@ from matplotlib.ticker import LinearLocator
 
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.model_selection import train_test_split
-from sklearn.linear_model import LinearRegression
+from sklearn.linear_model import LinearRegression, Lasso
 from sklearn.pipeline import make_pipeline
 from sklearn.utils import resample
 from sklearn.metrics import mean_squared_error
@@ -411,7 +411,34 @@ def crossval_ridge(x, y, z, degree, k, lamb):
     mse_test_ols = np.mean(scores_KFold_test)
 
     return (mse_train_ols, mse_test_ols)
+
+
+def crossval_lasso(x, y, z, degree, k, alpha=0.1):
+
+    x_data = design_matrix(x, y, degree)
+    z_data = z.flatten()
+    scores_KFold_train = np.zeros(k)
+    scores_KFold_test = np.zeros(k)
+    k_fold_indices = k_fold(x_data, k)
     
+    for j, (train_indices, test_indices) in enumerate(k_fold_indices):
+        X_train, X_test = x_data[train_indices], x_data[test_indices]
+        y_train, y_test = z_data[train_indices], z_data[test_indices]
+        
+        lasso_reg = Lasso(alpha=alpha, fit_intercept=False, max_iter=5000)
+        lasso_reg.fit(X_train, y_train)
+
+        y_tilde = lasso_reg.predict(X_train)
+        y_predict = lasso_reg.predict(X_test)
+        
+        scores_KFold_train[j] = mse(y_train.flatten(), y_tilde)
+        scores_KFold_test[j] = mse(y_test.flatten(), y_predict)
+
+    mse_train_lasso = np.mean(scores_KFold_train)
+    mse_test_lasso = np.mean(scores_KFold_test)
+
+    return (mse_train_lasso, mse_test_lasso)
+
 
 if __name__ == '__main__':
     np.random.seed(2023)
