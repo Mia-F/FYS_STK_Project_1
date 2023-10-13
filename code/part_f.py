@@ -7,9 +7,17 @@ warnings.filterwarnings('ignore')
 
 # Seaborn style setting
 sns.set_theme()
-font = {'weight': 'bold', 'size': 16}
-plt.rc('font', **font)
-sns.set(font_scale=1.5)
+params = {
+    "font.family": "Serif",
+    "font.serif": "Roman", 
+    "text.usetex": True,
+    "axes.titlesize": "large",
+    "axes.labelsize": "large",
+    "xtick.labelsize": "large",
+    "ytick.labelsize": "large",
+    "legend.fontsize": "large"
+}
+plt.rcParams.update(params)
 
 def design_matrix(x, y, degree):
     if len(x.shape) > 1:
@@ -34,6 +42,11 @@ def Franke_function(x, y, noise=False):
         return term1 + term2 + term3 + term4 + noise_val
     else:
         return term1 + term2 + term3 + term4
+    
+
+def mse(z_data, z_model):
+    return np.sum((z_data - z_model)**2) / len(z_data)
+
 
 def k_fold(data, k):
     n_samples = len(data)
@@ -74,111 +87,112 @@ def crossval_ols(x, y, z, degree, k):
 
     return (mse_train_ols, mse_test_ols)
     
-np.random.seed(2023)
-nsamples = 20
-nx, ny = nsamples, nsamples  
-x_ = np.sort(np.random.uniform(0, 1, nx))
-y_ = np.sort(np.random.uniform(0, 1, ny))
-x, y = np.meshgrid(x_, y_)
-x, y = x.ravel(), y.ravel()
-z = Franke_function(x, y, noise=False)
-z_noise = Franke_function(x, y, noise=True)  
-data = np.column_stack((x, y, z_noise))
+if __name__ == '__main__':
+    np.random.seed(2023)
+    nsamples = 20
+    nx, ny = nsamples, nsamples  
+    x_ = np.sort(np.random.uniform(0, 1, nx))
+    y_ = np.sort(np.random.uniform(0, 1, ny))
+    x, y = np.meshgrid(x_, y_)
+    x, y = x.ravel(), y.ravel()
+    z = Franke_function(x, y, noise=False)
+    z_noise = Franke_function(x, y, noise=True)  
+    data = np.column_stack((x, y, z_noise))
 
-# Lambda values and colors
-nlambdas = 6  
-lambdas = np.logspace(-8, 2, nlambdas)
-colors = sns.color_palette("husl", nlambdas)
+    # Lambda values and colors
+    nlambdas = 6  
+    lambdas = np.logspace(-8, 2, nlambdas)
+    colors = sns.color_palette("husl", nlambdas)
 
-# Degree setting
-max_degree = 15
-degrees = np.arange(1, max_degree + 1)
-k = 5
+    # Degree setting
+    max_degree = 15
+    degrees = np.arange(1, max_degree + 1)
+    k = 5
 
-mse_per_degree_ols = []
-for degree in degrees:
-    mse_train_ols, mse_test_ols = crossval_ols(x, y, z_noise, degree, k=5)  
-    mse_per_degree_ols.append(mse_test_ols)
-plt.plot(degrees, mse_per_degree_ols, label='OLS', color='black', linewidth=2.0)
-plt.xlabel('Degree')
-plt.ylabel('MSE (log scale)')
-plt.yscale('log')
-plt.legend()
-plt.savefig('OLS_crossval_mse_deg')
-plt.show()
+    # mse_per_degree_ols = []
+    # for degree in degrees:
+    #     mse_train_ols, mse_test_ols = crossval_ols(x, y, z_noise, degree, k=5)  
+    #     mse_per_degree_ols.append(mse_test_ols)
+    # plt.plot(degrees, mse_per_degree_ols, label='OLS', color='black', linewidth=2.0)
+    # plt.xlabel('Degree')
+    # plt.ylabel('MSE (log scale)')
+    # plt.yscale('log')
+    # plt.legend()
+    # plt.savefig('OLS_crossval_mse_deg')
+    # plt.show()
 
-# Ridge Regression
-plt.figure(figsize=(10, 6))
-for i, lmb in enumerate(lambdas):
-    mse_per_degree_ridge = []
-    for degree in degrees:
-        scores_KFold = np.zeros(k)
-        k_fold_indices = k_fold(data, k)
-        for j, (train_indices, test_indices) in enumerate(k_fold_indices):
-            train, test = data[train_indices], data[test_indices]
-            Xtrain = design_matrix(train[:,0], train[:,1], degree=degree)
-            ridge = Ridge(alpha=lmb)
-            ridge.fit(Xtrain, train[:,2])
-            Xtest = design_matrix(test[:,0], test[:,1], degree=degree)
-            zpred = ridge.predict(Xtest)
-            scores_KFold[j] = np.mean((zpred.ravel() - test[:,2]) ** 2)
-        mse_per_degree_ridge.append(np.mean(scores_KFold))
-    plt.plot(degrees, mse_per_degree_ridge, color=colors[i], label=f'Ridge, λ={lmb:.1e}')
+    # Ridge Regression
+    # plt.figure(figsize=(10, 6))
+    # for i, lmb in enumerate(lambdas):
+    #     mse_per_degree_ridge = []
+    #     for degree in degrees:
+    #         scores_KFold = np.zeros(k)
+    #         k_fold_indices = k_fold(data, k)
+    #         for j, (train_indices, test_indices) in enumerate(k_fold_indices):
+    #             train, test = data[train_indices], data[test_indices]
+    #             Xtrain = design_matrix(train[:,0], train[:,1], degree=degree)
+    #             ridge = Ridge(alpha=lmb)
+    #             ridge.fit(Xtrain, train[:,2])
+    #             Xtest = design_matrix(test[:,0], test[:,1], degree=degree)
+    #             zpred = ridge.predict(Xtest)
+    #             scores_KFold[j] = np.mean((zpred.ravel() - test[:,2]) ** 2)
+    #         mse_per_degree_ridge.append(np.mean(scores_KFold))
+    #     plt.plot(degrees, mse_per_degree_ridge, color=colors[i], label=f'Ridge, λ={lmb:.1e}')
 
-plt.xlabel('Degree')
-plt.ylabel('MSE (log scale)')
-plt.yscale('log')
-plt.legend()
-plt.savefig('Ridge_crossval_mse_deg')
-plt.show()
+    # plt.xlabel('Degree')
+    # plt.ylabel('MSE (log scale)')
+    # plt.yscale('log')
+    # plt.legend()
+    # plt.savefig('Ridge_crossval_mse_deg')
+    # plt.show()
 
-# Lasso Regression
-plt.figure(figsize=(10, 6))
-for i, lmb in enumerate(lambdas):
-    mse_per_degree_lasso = []
-    for degree in degrees:
-        scores_KFold = np.zeros(k)
-        k_fold_indices = k_fold(data, k)
-        for j, (train_indices, test_indices) in enumerate(k_fold_indices):
-            train, test = data[train_indices], data[test_indices]
-            Xtrain = design_matrix(train[:,0], train[:,1], degree=degree)
-            lasso = Lasso(alpha=lmb, max_iter=10000)
-            lasso.fit(Xtrain, train[:,2])
-            Xtest = design_matrix(test[:,0], test[:,1], degree=degree)
-            zpred = lasso.predict(Xtest)
-            scores_KFold[j] = np.mean((zpred.ravel() - test[:,2]) ** 2)
-        mse_per_degree_lasso.append(np.mean(scores_KFold))
-    plt.plot(degrees, mse_per_degree_lasso, color=colors[i], label=f'Lasso, λ={lmb:.1e}')
+    # Lasso Regression
+    # plt.figure(figsize=(10, 6))
+    # for i, lmb in enumerate(lambdas):
+    #     mse_per_degree_lasso = []
+    #     for degree in degrees:
+    #         scores_KFold = np.zeros(k)
+    #         k_fold_indices = k_fold(data, k)
+    #         for j, (train_indices, test_indices) in enumerate(k_fold_indices):
+    #             train, test = data[train_indices], data[test_indices]
+    #             Xtrain = design_matrix(train[:,0], train[:,1], degree=degree)
+    #             lasso = Lasso(alpha=lmb, max_iter=10000)
+    #             lasso.fit(Xtrain, train[:,2])
+    #             Xtest = design_matrix(test[:,0], test[:,1], degree=degree)
+    #             zpred = lasso.predict(Xtest)
+    #             scores_KFold[j] = np.mean((zpred.ravel() - test[:,2]) ** 2)
+    #         mse_per_degree_lasso.append(np.mean(scores_KFold))
+    #     plt.plot(degrees, mse_per_degree_lasso, color=colors[i], label=f'Lasso, λ={lmb:.1e}')
 
-plt.xlabel('Degree')
-plt.ylabel('MSE (log scale)')
-plt.yscale('log')
-plt.legend()
-plt.savefig('Lasso_crossval_mse_deg')
-plt.show()
+    # plt.xlabel('Degree')
+    # plt.ylabel('MSE (log scale)')
+    # plt.yscale('log')
+    # plt.legend()
+    # plt.savefig('Lasso_crossval_mse_deg')
+    # plt.show()
 
-# Plotting
-plt.figure(figsize=(12, 8))
+    # Plotting
+    fig, ax =plt.subplots()
 
-k_values = range(5, 11)  # k from 5 to 10
-colors = sns.color_palette("husl", len(k_values))
+    k_values = range(5, 11)  # k from 5 to 10
+    colors = sns.color_palette("husl", len(k_values))
 
-for idx, k in enumerate(k_values):
-    mse_test_ols_vals = []
-    mse_train_ols_vals = []
-    for degree in degrees:
-        mse_train_ols, mse_test_ols = crossval_ols(x, y, z_noise, degree, k)
-        mse_train_ols_vals.append(mse_train_ols)
-        mse_test_ols_vals.append(mse_test_ols)
-    
-    plt.plot(degrees, mse_test_ols_vals, label=f'k={k}', color=colors[idx], linewidth=2)
+    for idx, k in enumerate(k_values):
+        mse_test_ols_vals = []
+        mse_train_ols_vals = []
+        for degree in degrees:
+            mse_train_ols, mse_test_ols = crossval_ols(x, y, z_noise, degree, k)
+            mse_train_ols_vals.append(mse_train_ols)
+            mse_test_ols_vals.append(mse_test_ols)
+        
+        ax.plot(degrees, mse_test_ols_vals, label=f'k={k}', color=colors[idx], linewidth=2)
 
-plt.xlabel('Polynomial degree')
-plt.ylabel('Mean Squared Error')
-plt.title('Model complexity and error (OLS)')
-plt.yscale('log')
-plt.legend(title='k-Fold', loc='upper left')
-plt.grid(True, linestyle='--', alpha=0.001)
-plt.tight_layout()
-plt.savefig('Iteration over K fold')
-plt.show()
+    ax.set_xlabel('Polynomial degree')
+    ax.set_ylabel('MSE (log)')
+    ax.set_yscale('log')
+    ax.legend(title='k-Fold', loc='upper left')
+    # plt.grid(True, linestyle='--', alpha=0.001)
+    # plt.tight_layout()
+    plt
+    fig.savefig("../LaTeX/Images/cv_kfolds.png")
+    plt.show()
