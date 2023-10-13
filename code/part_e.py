@@ -274,6 +274,58 @@ def bootstrap_ridge(X_train, X_test, z_train, z_test, lamb, num_bootstraps):
     return (error_train, error_test, bias, variance)
 
 
+def bootstrap_real(x, y, z, degree, num_bootstraps=100):
+    """Resampling data using bootstrap algorithm.
+    
+    Args:
+        x (np.ndarray): x-values
+        y (np.ndarray): y-values
+        z (np.ndarray): values of Franke function
+        degree (int): polynomial degree
+        num_bootstraps (int): number of resamples
+        
+    Returns:
+        tuple: Error of train and test, bias and variance
+    """
+    X = design_matrix(x, y, degree)
+    X_train, X_test, z_train, z_test = train_test_split(X, z, test_size=0.2)
+    scaler = StandardScaler()
+    scaler.fit(X_train)
+    
+    X_train_scaled = scaler.transform(X_train)
+    X_test_scaled = scaler.transform(X_test)
+
+    z_train_scaled = (z_train - np.mean(z_train)) / np.std(z_train)
+    z_test_scaled = (z_test - np.mean(z_train)) / np.std(z_train)
+    # X = design_matrix(x, y, degree)
+    # X_train, X_test, z_train, z_test = train_test_split(X, z.flatten(), test_size=0.2)
+
+    z_tilde = np.empty((z_train_scaled.shape[0], num_bootstraps))
+    z_predict = np.empty((z_test_scaled.shape[0], num_bootstraps))
+
+    mse_train = np.empty(num_bootstraps)
+    mse_test = np.empty(num_bootstraps)
+
+    for i in range(num_bootstraps):
+        X_, z_ = resample(X_train_scaled, z_train_scaled)
+        beta = beta_OLS(X_, z_)
+        # beta = beta_ols(X_, z_)
+
+        z_tilde[:, i] = (X_ @ beta).ravel() 
+        z_predict[:, i] = (X_test_scaled @ beta).ravel() 
+
+        mse_train[i] = mse(z_, z_tilde[:, i])
+        mse_test[i] = mse(z_test_scaled, z_predict[:, i])
+
+    error_train = np.mean(mse_train)
+    error_test = np.mean(mse_test)
+    bias = np.mean((z_test_scaled - np.mean(z_predict, axis=1))**2)
+    variance = np.mean(np.var(z_predict, axis=1, keepdims=True))
+
+    return (error_train, error_test, bias, variance)
+
+
+
 def bootstrap_sklearn(x, y, z, degree, num_bootstraps, intercept=True):
     """Resampling data using bootstrap algorithm and SKLearn methods.
     
@@ -377,13 +429,13 @@ def crossval_ols(x, y, z, degree, k):
     k_fold_indices = k_fold(x_data, k)
     for j, (train_indices, test_indices) in enumerate(k_fold_indices):
         X_train, X_test = x_data[train_indices], x_data[test_indices]
-        y_train, y_test = z_data[train_indices], z_data[test_indices]
-        beta_ols = beta_OLS(X_train, y_train)
+        z_train, z_test = z_data[train_indices], z_data[test_indices]
+        beta_ols = beta_OLS(X_train, z_train)
 
-        y_tilde = (X_train @ beta_ols).ravel()
-        y_predict = (X_test @ beta_ols).ravel()
-        scores_KFold_train[j] = mse(y_train.flatten(), y_tilde)
-        scores_KFold_test[j] = mse(y_test.flatten(), y_predict)
+        z_tilde = (X_train @ beta_ols).ravel()
+        z_predict = (X_test @ beta_ols).ravel()
+        scores_KFold_train[j] = mse(z_train.flatten(), z_tilde)
+        scores_KFold_test[j] = mse(z_test.flatten(), z_predict)
     mse_train_ols = np.mean(scores_KFold_train)
     mse_test_ols = np.mean(scores_KFold_test)
 
@@ -398,19 +450,62 @@ def crossval_ridge(x, y, z, degree, k, lamb):
     k_fold_indices = k_fold(x_data, k)
     for j, (train_indices, test_indices) in enumerate(k_fold_indices):
         X_train, X_test = x_data[train_indices], x_data[test_indices]
-        y_train, y_test = z_data[train_indices], z_data[test_indices]
+        z_train, z_test = z_data[train_indices], z_data[test_indices]
 
-        beta = beta_ridge(X_train, y_train, lamb)
-        y_tilde = (X_train @ beta).ravel()
-        y_predict = (X_test @ beta).ravel()
+        # scaler = StandardScaler()
+        # scaler.fit(X_train)
+        
+        # X_train_scaled = scaler.transform(X_train)
+        # X_test_scaled = scaler.transform(X_test)
 
-        scores_KFold_train[j] = mse(y_train.flatten(), y_tilde)
-        scores_KFold_test[j] = mse(y_test.flatten(), y_predict)
+        # z_train_scaled = (z_train - np.mean(z_train)) / np.std(z_train)
+        # z_test_scaled = (z_test - np.mean(z_train)) / np.std(z_train)
 
-    mse_train_ols = np.mean(scores_KFold_train)
-    mse_test_ols = np.mean(scores_KFold_test)
+        beta = beta_ridge(X_train, z_train, lamb)
+        z_tilde = (X_train @ beta).ravel()
+        z_predict = (X_test @ beta).ravel()
 
-    return (mse_train_ols, mse_test_ols)
+        scores_KFold_train[j] = mse(z_train.flatten(), z_tilde)
+        scores_KFold_test[j] = mse(z_test.flatten(), z_predict)
+
+    mse_train_ridge = np.mean(scores_KFold_train)
+    mse_test_ridge = np.mean(scores_KFold_test)
+
+    return (mse_train_ridge, mse_test_ridge)
+
+
+def crossval_ridge_real(x, y, z_data, degree, k, lamb):
+    x_data = design_matrix(x, y, degree)
+    
+    # z_data = z.flatten()
+    scores_KFold_train = np.zeros(k)
+    scores_KFold_test = np.zeros(k)
+    k_fold_indices = k_fold(x_data, k)
+    for j, (train_indices, test_indices) in enumerate(k_fold_indices):
+        X_train, X_test = x_data[train_indices], x_data[test_indices]
+        z_train, z_test = z_data[train_indices], z_data[test_indices]
+
+        # Scaling the terrain data
+        scaler = StandardScaler()
+        scaler.fit(X_train)
+        
+        X_train_scaled = scaler.transform(X_train)
+        X_test_scaled = scaler.transform(X_test)
+
+        z_train_scaled = (z_train - np.mean(z_train)) / np.std(z_train)
+        z_test_scaled = (z_test - np.mean(z_train)) / np.std(z_train)
+
+        beta = beta_ridge(X_train_scaled, z_train_scaled, lamb)
+        z_tilde = (X_train_scaled @ beta).ravel()
+        z_predict = (X_test_scaled @ beta).ravel()
+
+        scores_KFold_train[j] = mse(z_train_scaled, z_tilde)
+        scores_KFold_test[j] = mse(z_test_scaled, z_predict)
+
+    mse_train_ridge = np.mean(scores_KFold_train)
+    mse_test_ridge = np.mean(scores_KFold_test)
+
+    return (mse_train_ridge, mse_test_ridge)
     
 
 if __name__ == '__main__':
@@ -447,20 +542,21 @@ if __name__ == '__main__':
     bias_noise = np.zeros(max_degree)
     variance_noise = np.zeros(max_degree)
 
+    # CV OLS
     error_train_cv = np.zeros(max_degree)
     error_test_cv = np.zeros(max_degree)
 
     error_train_noise_cv = np.zeros(max_degree)
     error_test_noise_cv = np.zeros(max_degree)
 
-    # Ridge
-    n_lambdas = 6  
-    lambdas = np.logspace(-8, 2, n_lambdas)
+    # CV Ridge
+    n_lambdas = 8  
+    # lambdas = np.logspace(-8, 0, n_lambdas)
+    lambdas = np.array([0.00000001, 0.0000001, 0.000001, 0.00001, 0.0001, 0.001, 0.01, 0.1])
     colors_ridge = sns.color_palette("tab10", n_lambdas)
 
     error_train_ridge = np.zeros((max_degree, n_lambdas))
     error_test_ridge = np.zeros((max_degree, n_lambdas))
-
     error_train_ridge_noise = np.zeros((max_degree, n_lambdas))
     error_test_ridge_noise = np.zeros((max_degree, n_lambdas))
 
@@ -470,9 +566,11 @@ if __name__ == '__main__':
     bias_real = np.zeros(max_degree)
     variance_real = np.zeros(max_degree)
 
-    # Real data cv
+    # Real data CV
     error_train_real_cv = np.zeros(max_degree)
     error_test_real_cv = np.zeros(max_degree)
+    error_train_real_ridge = np.zeros(max_degree)
+    error_test_real_ridge = np.zeros(max_degree)
 
 
     for i in range(max_degree):
@@ -480,11 +578,12 @@ if __name__ == '__main__':
         error_train_noise[i], error_test_noise[i], bias_noise[i], variance_noise[i] = bootstrap_ols(x, y, z_noise, i+1)
         error_train_cv[i], error_test_cv[i] = crossval_ols(x, y, z, i+1, k)
         error_train_noise_cv[i], error_test_noise_cv[i] = crossval_ols(x, y, z_noise, i+1, k)
-        error_train_real[i], error_test_real[i], bias_real[i], variance_real[i] = bootstrap_ols(x_real, y_real, z_real, i+1)
+        error_train_real[i], error_test_real[i], bias_real[i], variance_real[i] = bootstrap_real(x_real, y_real, z_real, i+1)
         error_train_real_cv[i], error_test_real_cv[i] = crossval_ols(x, y, z, i+1, k)
         for j in range(n_lambdas):
             error_train_ridge[i, j], error_test_ridge[i, j] = crossval_ridge(x, y, z, i+1, k, lambdas[j])
             error_train_ridge_noise[i, j], error_test_ridge_noise[i, j] = crossval_ridge(x, y, z_noise, i+1, k, lambdas[j])
+            error_train_real_ridge[i], error_test_real_ridge[i] = crossval_ridge_real(x_real, y_real, z_real, i+1, k, lambdas[j])
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
         # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
@@ -496,6 +595,7 @@ if __name__ == '__main__':
     fig3, ax3 = plt.subplots()
     fig4, ax4 = plt.subplots()
     fig5, ax5 = plt.subplots()
+    fig6, ax6 = plt.subplots()
 
     # Franke function without noise
     ax1.plot(degrees, error_train, color=colors[0], linestyle='--')
@@ -506,7 +606,7 @@ if __name__ == '__main__':
 
     ax1.set_xlabel("Polynomial degree")
     ax1.set_yscale('log')
-    ax1.set_ylabel("MSE")
+    ax1.set_ylabel("MSE (log)")
     ax1.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax1.legend(loc='upper left')
     fig1.savefig("../LaTeX/Images/bootstrap_error.png")
@@ -522,7 +622,7 @@ if __name__ == '__main__':
     # ax.set_xscale('log')
     ax2.set_xlabel("Polynomial degree")
     ax2.set_yscale('log')
-    ax2.set_ylabel("MSE")
+    ax2.set_ylabel("MSE (log)")
     ax2.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax2.legend(loc='upper left')
     fig2.savefig("../LaTeX/Images/bias_variance.png")
@@ -534,30 +634,42 @@ if __name__ == '__main__':
 
     ax3.set_xlabel("Polynomial degree")
     ax3.set_yscale('log')
-    ax3.set_ylabel("MSE")
+    ax3.set_ylabel("MSE (log)")
     ax3.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax3.legend(loc='upper left')
     fig3.savefig("../LaTeX/Images/bootstrap_cv.png")
 
     for j in range(n_lambdas):
-        ax4.plot(degrees, error_train_ridge_noise[:, j], label=rf'$\lambda = ${lambdas[j]}', color=colors_ridge[j])
+        ax4.plot(degrees, error_train_ridge_noise[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
     
     ax4.set_xlabel("Polynomial degree")
     ax4.set_yscale('log')
-    ax4.set_ylabel("MSE")
+    ax4.set_ylabel("MSE (log)")
     ax4.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    ax4.legend(loc='upper left')
+    ax4.legend(loc='upper right')
     fig4.savefig("../LaTeX/Images/cv_ridge.png")
+
+    # for i in range(max_degree):
 
     ax5.plot(degrees, error_test_real, color=colors[1], label='Bootstrap')
     ax5.plot(degrees, error_test_real_cv, color=colors[2], label='CV')
 
     ax5.set_xlabel("Polynomial degree")
-    ax5.set_yscale('log')
+    # ax5.set_yscale('log')
     ax5.set_ylabel("MSE")
     ax5.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax5.legend(loc='upper left')
     fig5.savefig("../LaTeX/Images/bootstrap_cv_terrain.png")
+
+    ax6.plot(degrees, error_train_real_ridge, color=colors[1], label='Train')
+    ax6.plot(degrees, error_test_real_ridge, color=colors[2], label='Test')
+
+    ax6.set_xlabel("Polynomial degree")
+    # ax6.set_yscale('log')
+    ax6.set_ylabel("MSE")
+    ax6.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax6.legend(loc='upper left')
+    fig6.savefig("../LaTeX/Images/cv_ridge_terrain.png")
 
     # lambdas = np.logspace(-8, 0, 9)
     # l = len(lambdas)
