@@ -195,7 +195,7 @@ def bootstrap_reshape(x, y, z, degree, num_bootstraps):
     return (error_train, error_test, bias, variance)
 
 
-def bootstrap_ols(x, y, z, degree, num_bootstraps):
+def bootstrap_ols(x, y, z, degree, num_bootstraps=100):
     """Resampling data using bootstrap algorithm.
     
     Args:
@@ -328,9 +328,9 @@ def creating_data(data_file, n):
     return new_data
 
     
-def load_real_data(n):
+def load_real_data(filename, n):
     # Load the terrain
-    filename = '../DataFiles/SRTM_data_Norway_1.tif'
+    # filename = '../DataFiles/SRTM_data_Norway_1.tif'
     data = creating_data(filename, n)
 
     #creating x and y
@@ -358,7 +358,7 @@ def ols_error_plot(x, y, z, max_degree):
 
     for i in range(max_degree):
         degrees[i] = i + 1
-        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
+        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1)
 
     fig, ax = plt.subplots()
     ax.plot(degrees, error_train, label='Train error')
@@ -433,7 +433,7 @@ if __name__ == '__main__':
     # plot_3d(x, y, z)
 
     # Real data
-    # x, y, z = load_real_data(n)
+    x_real, y_real, z_real = load_real_data('../DataFiles/SRTM_data_Norway_1.tif', n)
 
     # degrees = np.zeros(max_degree)
     # error = np.zeros(max_degree)
@@ -464,12 +464,24 @@ if __name__ == '__main__':
     error_train_ridge_noise = np.zeros((max_degree, n_lambdas))
     error_test_ridge_noise = np.zeros((max_degree, n_lambdas))
 
+    # Real data bootstrap
+    error_train_real = np.zeros(max_degree)
+    error_test_real = np.zeros(max_degree)
+    bias_real = np.zeros(max_degree)
+    variance_real = np.zeros(max_degree)
+
+    # Real data cv
+    error_train_real_cv = np.zeros(max_degree)
+    error_test_real_cv = np.zeros(max_degree)
+
 
     for i in range(max_degree):
-        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1, 100)
-        error_train_noise[i], error_test_noise[i], bias_noise[i], variance_noise[i] = bootstrap_ols(x, y, z_noise, i+1, 100)
+        error_train[i], error_test[i], bias[i], variance[i] = bootstrap_ols(x, y, z, i+1)
+        error_train_noise[i], error_test_noise[i], bias_noise[i], variance_noise[i] = bootstrap_ols(x, y, z_noise, i+1)
         error_train_cv[i], error_test_cv[i] = crossval_ols(x, y, z, i+1, k)
         error_train_noise_cv[i], error_test_noise_cv[i] = crossval_ols(x, y, z_noise, i+1, k)
+        error_train_real[i], error_test_real[i], bias_real[i], variance_real[i] = bootstrap_ols(x_real, y_real, z_real, i+1)
+        error_train_real_cv[i], error_test_real_cv[i] = crossval_ols(x, y, z, i+1, k)
         for j in range(n_lambdas):
             error_train_ridge[i, j], error_test_ridge[i, j] = crossval_ridge(x, y, z, i+1, k, lambdas[j])
             error_train_ridge_noise[i, j], error_test_ridge_noise[i, j] = crossval_ridge(x, y, z_noise, i+1, k, lambdas[j])
@@ -483,6 +495,7 @@ if __name__ == '__main__':
     fig2, ax2 = plt.subplots()
     fig3, ax3 = plt.subplots()
     fig4, ax4 = plt.subplots()
+    fig5, ax5 = plt.subplots()
 
     # Franke function without noise
     ax1.plot(degrees, error_train, color=colors[0], linestyle='--')
@@ -535,6 +548,16 @@ if __name__ == '__main__':
     ax4.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax4.legend(loc='upper left')
     fig4.savefig("../LaTeX/Images/cv_ridge.png")
+
+    ax5.plot(degrees, error_test_real, color=colors[1], label='Bootstrap')
+    ax5.plot(degrees, error_test_real_cv, color=colors[2], label='CV')
+
+    ax5.set_xlabel("Polynomial degree")
+    ax5.set_yscale('log')
+    ax5.set_ylabel("MSE")
+    ax5.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    ax5.legend(loc='upper left')
+    fig5.savefig("../LaTeX/Images/bootstrap_cv_terrain.png")
 
     # lambdas = np.logspace(-8, 0, 9)
     # l = len(lambdas)
