@@ -174,8 +174,8 @@ if __name__ == '__main__':
     # Plotting
     fig, ax =plt.subplots()
 
-    k_values = range(5, 11)  # k from 5 to 10
-    colors = sns.color_palette("husl", len(k_values))
+    k_values = np.arange(5, 11)  # k from 5 to 10
+    colors = sns.color_palette("tab10", len(k_values))
 
     for idx, k in enumerate(k_values):
         mse_test_ols_vals = []
@@ -185,7 +185,7 @@ if __name__ == '__main__':
             mse_train_ols_vals.append(mse_train_ols)
             mse_test_ols_vals.append(mse_test_ols)
         
-        ax.plot(degrees, mse_test_ols_vals, label=f'k={k}', color=colors[idx], linewidth=2)
+        ax.plot(degrees, mse_test_ols_vals, label=f'k={k}', color=colors[idx])
 
     ax.set_xlabel('Polynomial degree')
     ax.set_ylabel('MSE (log)')
