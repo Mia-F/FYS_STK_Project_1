@@ -15,11 +15,19 @@ from sklearn.pipeline import make_pipeline
 from tqdm import tqdm
 from random import randint
 
+fontsize = 30
 sns.set_theme()
-font = {'weight' : 'bold',
-        'size'   : 32}
-plt.rc('font', **font)
-sns.set(font_scale=2)
+params = {
+    "font.family": "Serif",
+    "font.serif": "Roman", 
+    "text.usetex": True,
+    "axes.titlesize": fontsize,
+    "axes.labelsize": fontsize,
+    "xtick.labelsize": "large",
+    "ytick.labelsize": "large",
+    "legend.fontsize": fontsize
+}
+plt.rcParams.update(params)
 
 def Franke_function(x,y, noise=False):
   """
@@ -190,6 +198,28 @@ if __name__ == "__main__":
     Score_test_scitlearn[i] = R2(y_test, y_pred)
 
 
+  fig, ax = plt.subplots()
+  plot_1 = ax.plot(degree, Error_train, label="MSE Train", color="tab:orange")
+  plot_2 = ax.plot(degree, Error_test, label="MSE Test", color="tab:blue")
+  ax.set_ylabel("MSE")
+  ax.set_xlabel("Degrees")
+ 
+
+  ax2 = ax.twinx()
+  plot_3 = ax2.plot(degree, Score_train, label="R2 Train", color="tab:green")
+  plot_4 = ax2.plot(degree, Score_test, label="R2 Test", color="tab:red")
+  ax2.set_ylabel("R2 score")
+  plt.grid()
+  
+
+  lns = plot_1 + plot_2 + plot_3 +plot_4
+  labels = [l.get_label() for l in lns]
+  plt.legend(lns, labels, loc="center right")
+  plt.show()
+ 
+
+  
+  
   plt.plot(degree, Error_train, label="Train")
   plt.plot(degree, Error_test, label="Test")
   plt.ylabel("MSE")
@@ -251,7 +281,7 @@ if __name__ == "__main__":
       plt.plot(range(len(beta_vals[i])), beta_vals[i], marker = "o" ,label=f'Degree {degree[i]}', color=color_palette[i])
 
   locs, labels = plt.xticks()  # Get the current locations and labels.
-  plt.title(r"Plot of the $\beta$ values for the different polynomial degrees")
+  #plt.title(r"Plot of the $\beta$ values for the different polynomial degrees")
   plt.xticks(np.arange(0, 1, step=1))  # Set label locations.
   plt.xticks(np.arange(21), [r'$\beta_0$', r'$\beta_1$', r'$\beta_2$', \
             r'$\beta_3$', r'$\beta_4$', r'$\beta_5$', \
