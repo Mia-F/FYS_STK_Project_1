@@ -648,10 +648,10 @@ if __name__ == '__main__':
         for j in range(n_lambdas):
             # error_train_ridge[i, j], error_test_ridge[i, j] = crossval_ridge(x, y, z, i+1, k, lambdas[j])
             # error_train_ridge_noise[i, j], error_test_ridge_noise[i, j] = crossval_ridge(x, y, z_noise, i+1, k, lambdas[j])
-            # error_train_real_cv_ridge[i, j], error_test_real_cv_ridge[i, j] = crossval_ridge_real(x_real, y_real, z_real, i+1, k, lambdas[j])
-            error_train_cv_lasso[i, j], error_test_cv_lasso[i, j] = crossval_lasso(x, y, z, i+1, k, alpha=lambdas[j])
-            error_train_cv_lasso_noise[i, j], error_test_cv_lasso_noise[i, j] = crossval_lasso(x, y, z_noise, i+1, k, alpha=lambdas[j])
-            error_train_real_cv_lasso[i, j], error_test_real_cv_lasso[i, j] = crossval_lasso(x_real, y_real, z_real, i+1, k, alpha=lambdas[j])
+            error_train_real_cv_ridge[i, j], error_test_real_cv_ridge[i, j] = crossval_ridge_real(x_real, y_real, z_real, i+1, k, lambdas[j])
+            # error_train_cv_lasso[i, j], error_test_cv_lasso[i, j] = crossval_lasso(x, y, z, i+1, k, alpha=lambdas[j])
+            # error_train_cv_lasso_noise[i, j], error_test_cv_lasso_noise[i, j] = crossval_lasso(x, y, z_noise, i+1, k, alpha=lambdas[j])
+            # error_train_real_cv_lasso[i, j], error_test_real_cv_lasso[i, j] = crossval_lasso(x_real, y_real, z_real, i+1, k, alpha=lambdas[j])
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap(x, y, z, i+1, 100)
         # error_train[i], error_test[i], bias[i], variance[i] = bootstrap_reshape(x, y, z, i+1, 100)
         # error[i], error_train[i], error_test[i], bias[i], variance[i] = bootstrap_sklearn(x, y, z, i+1, 100, intercept=False)
@@ -662,8 +662,8 @@ if __name__ == '__main__':
     # fig2, ax2 = plt.subplots()
     # fig3, ax3 = plt.subplots()
     fig4, ax4 = plt.subplots()
-    fig5, ax5 = plt.subplots()
-    fig6, ax6 = plt.subplots()
+    # fig5, ax5 = plt.subplots()
+    # fig6, ax6 = plt.subplots()
 
     # Franke function without noise
     # ax1.plot(degrees, error_train, color=colors[0], linestyle='--')
@@ -718,30 +718,30 @@ if __name__ == '__main__':
     # fig4.savefig("../LaTeX/Images/cv_ridge.png")
 
     for j in range(n_lambdas):
-        ax4.plot(degrees, error_test_cv_lasso[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
-        ax5.plot(degrees, error_test_cv_lasso_noise[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
-        ax6.plot(degrees, error_test_real_cv_lasso[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
+        ax4.plot(degrees, error_test_real_cv_ridge[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
+        # ax5.plot(degrees, error_test_cv_lasso_noise[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
+        # ax6.plot(degrees, error_test_real_cv_lasso[:, j], label=rf'$\lambda = 10^{j-8}$', color=colors_ridge[j])
     
     ax4.set_xlabel("Polynomial degree")
     ax4.set_yscale('log')
     ax4.set_ylabel("MSE (log)")
     ax4.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
     ax4.legend(loc='upper right')
-    fig4.savefig("../LaTeX/Images/cv_lasso.png")
+    fig4.savefig("../LaTeX/Images/cv_ridge_terrain.png")
 
-    ax5.set_xlabel("Polynomial degree")
-    ax5.set_yscale('log')
-    ax5.set_ylabel("MSE (log)")
-    ax5.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    ax5.legend(loc='upper right')
-    fig5.savefig("../LaTeX/Images/cv_lasso_noise.png")
+    # ax5.set_xlabel("Polynomial degree")
+    # ax5.set_yscale('log')
+    # ax5.set_ylabel("MSE (log)")
+    # ax5.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    # ax5.legend(loc='upper right')
+    # fig5.savefig("../LaTeX/Images/cv_lasso_noise.png")
 
-    ax6.set_xlabel("Polynomial degree")
-    ax6.set_yscale('log')
-    ax6.set_ylabel("MSE (log)")
-    ax6.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
-    ax6.legend(loc='upper right')
-    fig6.savefig("../LaTeX/Images/cv_lasso_real.png")
+    # ax6.set_xlabel("Polynomial degree")
+    # ax6.set_yscale('log')
+    # ax6.set_ylabel("MSE (log)")
+    # ax6.set_xticks(np.arange(0, max_degree+1, 2, dtype=np.int32))
+    # ax6.legend(loc='upper right')
+    # fig6.savefig("../LaTeX/Images/cv_lasso_real.png")
 
     # for i in range(max_degree):
 
