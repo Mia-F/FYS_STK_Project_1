@@ -1,0 +1,86 @@
+\documentclass[reprint,english,notitlepage]{revtex4-1}  % 
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{physics,amssymb} 
+\usepackage{graphicx}        
+\usepackage{xcolor}          
+\usepackage{hyperref}        
+\usepackage{tikz}             
+\usepackage{listings}       
+\usepackage{subfigure}  
+\usepackage{here}
+\usepackage{fontawesome}
+\bibliographystyle{plain}
+\hypersetup{ % this is just my personal choice, feel free to change things
+    colorlinks,
+    linkcolor={red!50!black},
+    citecolor={blue!50!black},
+    urlcolor={blue!80!black}}
+
+%% Defines the style of the programming listing
+%% This is actually my personal template, go ahead and change stuff if you want
+\lstset{ %
+	inputpath=,
+	backgroundcolor=\color{white!88!black},
+	basicstyle={\ttfamily\scriptsize},
+	commentstyle=\color{magenta},
+	language=Python,
+	morekeywords={True,False},
+	tabsize=4,
+	stringstyle=\color{green!55!black},
+	frame=single,
+	keywordstyle=\color{blue},
+	showstringspaces=false,
+	columns=fullflexible,
+	keepspaces=true}
+
+
+\begin{document}
+\title{Project 1 FYS-STK4155}
+\author{Mia Synnøve Frivik, Andrea Myrvang, Max Jan Willem Schuringa, Janita Ovidie Sandtrøen Willumsen \\ \faGithub \, \url{https://github.com/Mia-F/FYS_STK_Project_1.git}}        
+\date{\today}
+\noaffiliation  
+
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
+
+\maketitle 
+%
+\section{Introduction}
+\input{sections/introduction}
+%
+\section{Theory}
+\input{sections/theory}
+%
+\section{Method}
+\input{sections/methods}
+%
+\section{Results}
+\input{sections/results}
+%
+\section{Discussion}
+\input{sections/discussion}
+%
+\section{Conclusion}
+\input{sections/conclusion}
+% acknowledgements (optional)
+\section{Acknowledgement}
+\noindent We would like to thank Morten Hjorth-Jensen for his amazing and well crafted jupyter notebooks. Additionally, we would like to acknowledge the valuable 
+inspiration provided by ChatGPT throughout the report-writing process. 
+%
+\clearpage
+\newpage
+\onecolumngrid
+\appendix
+\pagenumbering{alph}
+\include{appendices/appendix}
+%
+\newpage
+\clearpage
+%
+\section*{References}  % the asterisk (*) after \section makes the section numbering go away
+\bibliography{references/citation}
+
+
+\end{document}

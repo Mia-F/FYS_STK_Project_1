@@ -1,0 +1,60 @@
+\begin{thebibliography}{1}
+
+\bibitem{MLM}
+Jason Brownlee.
+\newblock A gentle introduction to the bootstrap method.
+\newblock
+  \url{https://machinelearningmastery.com/a-gentle-introduction-to-the-bootstrap-method/},
+  2019.
+
+\bibitem{HASTIE2009}
+Trevor Hastie, Robert Tibshiran, and Jerome Friedman.
+\newblock {\em The elements of statistical learning: data mining, inference and
+  prediction}.
+\newblock Springer, 2 edition, 2009.
+
+\bibitem{Week34}
+Morten Hjorth-Jensen.
+\newblock Week 34: Introduction to the course, logistics and practicalities.
+\newblock
+  \url{https://compphysics.github.io/MachineLearning/doc/LectureNotes/_build/html/week34.html},
+  2023.
+
+\bibitem{PSU}
+Eberly~College of~Science.
+\newblock Bootstrapping methods.
+\newblock \url{https://online.stat.psu.edu/stat500/lesson/11/11.2/11.2.1}.
+
+\bibitem{JAY2021CLT}
+John Smith.
+\newblock {\em Jay L. Devore and Kenneth N. Berk and Matthew A. Carlton}, pages
+  371--372.
+\newblock Springer Cham, 3 edition, 2021.
+\newblock The Central Limit theorem.
+
+\bibitem{JAY2021LLN}
+John Smith.
+\newblock {\em Jay L. Devore and Kenneth N. Berk and Matthew A. Carlton}, pages
+  376--377.
+\newblock Springer Cham, 3 edition, 2021.
+\newblock The Law of Large Numbers.
+
+\bibitem{SpringerCh3}
+Robert~Tibshirani Trevor~Hastie and Jerome Friedman.
+\newblock {\em Linear Methods for Regression}, pages 43--94.
+\newblock Springer New York, 2 edition, 2009.
+\newblock Chapter 3.
+
+\bibitem{Wessel}
+Wessel~N. van Wieringen.
+\newblock Lecture notes on ridge regression.
+\newblock \url{https://browse.arxiv.org/pdf/1509.09169.pdf}, 2023.
+
+\bibitem{WEN2022103535}
+Hong Wen, Xiyong Wu, Xin Liao, Dong Wang, Kaiyang Huang, and Bernd Wünnemann.
+\newblock Application of machine learning methods for snow avalanche
+  susceptibility mapping in the parlung tsangpo catchment, southeastern
+  qinghai-tibet plateau.
+\newblock {\em Cold Regions Science and Technology}, 198:103535, 2022.
+
+\end{thebibliography}

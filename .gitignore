@@ -501,5 +501,7 @@ pyrightconfig.json
 .history
 .ionide
 
+# Ignore all files from develop phase
+junk/
 # End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,latex
-code/part_c.py
+
