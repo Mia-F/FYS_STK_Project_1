@@ -10,9 +10,7 @@
 \usepackage{subfigure}  
 \usepackage{here}
 \usepackage{fontawesome}
-\usepackage{xr}
-\externaldocument{Theory}
-\bibliographystyle{apsrev4-1.bst}
+\bibliographystyle{plain}
 \hypersetup{ % this is just my personal choice, feel free to change things
     colorlinks,
     linkcolor={red!50!black},
@@ -37,96 +35,52 @@
 	keepspaces=true}
 
 
-%% USEFUL LINKS:
-%%
-%%   UiO LaTeX guides:        https://www.mn.uio.no/ifi/tjenester/it/hjelp/latex/ 
-%%   mathematics:             https://en.wikibooks.org/wiki/LaTeX/Mathematics
-
-%%   PHYSICS !                https://mirror.hmc.edu/ctan/macros/latex/contrib/physics/physics.pdf
-
-%%   the basics of Tikz:       https://en.wikibooks.org/wiki/LaTeX/PGF/TikZ
-%%   all the colors!:          https://en.wikibooks.org/wiki/LaTeX/Colors
-%%   how to draw tables:       https://en.wikibooks.org/wiki/LaTeX/Tables
-%%   code listing styles:      https://en.wikibooks.org/wiki/LaTeX/Source_Code_Listings
-%%   \includegraphics          https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics
-%%   learn more about figures  https://en.wikibooks.org/wiki/LaTeX/Floats,_Figures_and_Captions
-%%   automagic bibliography:   https://en.wikibooks.org/wiki/LaTeX/Bibliography_Management  (this one is kinda difficult the first time)
-%%   REVTeX Guide:             http://www.physics.csbsju.edu/370/papers/Journal_Style_Manuals/auguide4-1.pdf
-%%
-%%   (this document is of class "revtex4-1", the REVTeX Guide explains how the class works)
-
-
-%% CREATING THE .pdf FILE USING LINUX IN THE TERMINAL
-%% 
-%% [terminal]$ pdflatex template.tex
-%%
-%% Run the command twice, always.
-%% If you want to use \footnote, you need to run these commands (IN THIS SPECIFIC ORDER)
-%% 
-%% [terminal]$ pdflatex template.tex
-%% [terminal]$ bibtex template
-%% [terminal]$ pdflatex template.tex
-%% [terminal]$ pdflatex template.tex
-%%
-%% Don't ask me why, I don't know.
-
 \begin{document}
-\title{Project 1 FYS-STK4155}   % self-explanatory
+\title{Project 1 FYS-STK4155}
 \author{Mia Synnøve Frivik, Andrea Myrvang, Max Jan Willem Schuringa, Janita Ovidie Sandtrøen Willumsen \\ \faGithub \, \url{https://github.com/Mia-F/FYS_STK_Project_1.git}}        
-\date{\today}                             % self-explanatory
-\noaffiliation   
+\date{\today}
+\noaffiliation  
 
-% ignore this
-\begin{abstract}                          % marks the 
+\begin{abstract}
+\input{sections/abstract}
+\end{abstract}
 
-\input{abstract}
-
-\end{abstract}                            % marks the end of the abstract
-\maketitle                                % creates the title, author, date & abstract
-
-
-% the fundamental components of scientific reports:
+\maketitle 
+%
 \section{Introduction}
-
-\input{Introduction}
-\section{Theory}   % (optional)
-\input{Theory}
-
+\input{sections/introduction}
+%
+\section{Theory}
+\input{sections/theory}
+%
 \section{Method}
-\input{Method}
-
-
+\input{sections/methods}
+%
 \section{Results}
-\input{Results}
+\input{sections/results}
+%
 \section{Discussion}
-\input{Discussion}
+\input{sections/discussion}
+%
 \section{Conclusion}
-\input{conclusion}
+\input{sections/conclusion}
 % acknowledgements (optional)
 \section{Acknowledgement}
 \noindent We would like to thank Morten Hjorth-Jensen for his amazing and well crafted jupyter notebooks. Additionally, we would like to acknowledge the valuable 
-inspiration provided by ChatGPT throughout the report-writing process.
-
-
-
-%% When it comes to the bibliography I personally generate it using BibLaTeX. (see the link above if you're interested)
-%% You're obviously allowed to create the references section however you like.
-%% I'll keep it simple here.
-\newpage
-%% if you want to include an appendix, this is how you do it
+inspiration provided by ChatGPT throughout the report-writing process. 
+%
 \clearpage
+\newpage
 \onecolumngrid
-\section*{References}  % the asterisk (*) after \section makes the section numbering go away
-
-\bibliography{Citation} 
-
 \appendix
 \pagenumbering{alph}
+\include{appendices/appendix}
+%
+\newpage
+\clearpage
+%
+\section*{References}  % the asterisk (*) after \section makes the section numbering go away
+\bibliography{references/citation}
 
-\include{appendix}
-
-%% If you want to include figure:
-%\includegraphics[scale=1.0]{filename}
-%% check https://en.wikibooks.org/wiki/LaTeX/Importing_Graphics if you want to know more
 
 \end{document}
