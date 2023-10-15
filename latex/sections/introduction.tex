@@ -1,0 +1,14 @@
+% \thispagestyle{plain}
+\noindent Machine learning is a powerful tool useful in many fields of research. 
+One illustration of its utility is its application to terrain data analysis.
+Through the creation of terrain models from real data of a specific geographic area, 
+one can effectively anticipate high-risk avalanche zones \cite{WEN2022103535}, 
+potentially leading to life-saving interventions. 
+These methods can extends to addressing concerns related to floods, which has become 
+a hot topic this past month following the storm Hans. Machine learning can also aid in spatial planning challenges, useful in big cities all over the world. It is fair to say machine learning possesses immense potential when solving complex and relevant challenges in our modern society, encompassing climate-related issues, urban planning, and life-saving endeavors.
+
+\noindent In this report er are going to study three different regression methods, ordinary least squares (OLS), Ridge and LASSO to see how these methods compare when applied to different data sets. First we are going to use the Franke function to make dummy data to validate if our models work. When plotted in the interval $[0,1]$ this function looks like a mountain and a valley, which is a perfect starting point when we later want to apply these methods to real digital terrain data obtained from \url{https://earthexplorer.usgs.gov/}. To more accurately simulate the realism of practical machine learning scenarios, we will impose limitations on our data sets. Additionally, we will employ
+techniques such as bootstrapping and cross-validation to expand our data set size and assess their impact on model validation.
+
+\noindent First, we will outline the methods and models employed. Then we present our results and a discussion of them, followed by the conclusion.
+

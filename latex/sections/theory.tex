@@ -1,0 +1,152 @@
+\thispagestyle{plain}
+\subsection{Linear regression methods}
+\noindent Linear regression is a foundational statistical modeling technique employed to predict continuous target variables based on one or more input features. It operates under the assumption that there exists a linear relationship between the input features and the target variable. The primary objective of linear regression is to determine the coefficients to establish the optimal linear model that fits the given data the best. A linear regression model has the following form :
+%
+\begin{align}\label{eq:linear_model}
+    f(\textbf{X}) = \beta_0 + \sum^{p}_{i=1} X_i \beta_i \text{\cite{HASTIE2009}} %\cite{hastie_09_element- of.statistical-learning} 
+\end{align}
+%
+\noindent Where $\beta$ is the coefficients and X the design matrix. It is important to note that this method assume that either the function is linear or approximately linear.
+
+\noindent There exist several variants of linear regression, each of which offers unique characteristics and advantages. In this particular context, we will narrow our focus to three fundamental techniques: Ordinary Least Squares (OLS), Ridge regression and LASSO regression. These techniques will be employed in the context of analyzing the two-dimensional Franke function.
+
+\subsubsection{Ordinary least squares (OLS)}
+\noindent Ordinary Least Squares (OLS) is a fundamental technique in regression analysis, where the aim is to create a model that minimize the difference from the observed data and the predicted model. This is achieved by estimating the coefficients in a linear regression model, as defined in Equation \eqref{eq:linear_model} %\cite{AY}.
+To minimize the MSE, we calculate the optimal $\beta$ values. This involves taking the derivative of the cost function, as shown in Equation \eqref{eq:cost_function}, and setting it to zero.
+%
+\begin{equation}\label{eq:cost_function}
+C(\beta) = \frac{1}{n} \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace 
+\end{equation}
+%
+\noindent By solving $\frac{\partial C(\beta)}{\partial \beta} = 0$, we determine that for OLS, the optimal $\beta$ values can be obtained by solving Equation \eqref{eq:optimal_beta_OLS}.
+%
+\begin{equation}\label{eq:optimal_beta_OLS}
+\beta = (\textbf{X}^T \textbf{X})^{-1}\textbf{X}^T \textbf{y} 
+\end{equation}
+%
+\noindent While OLS is a straightforward and efficient linear regression method 
+to implement, its limitations become particularly evident when dealing 
+with data sets that contain substantial amounts of noise. In response to the limitations of OLS in noisy data sets, two other linear regression methods have been developed namely Ridge and LASSO regression. 
+
+\subsubsection{Ridge}
+\noindent Ridge regression closely resembles OLS, but it has an incorporation of a penalty term. The penalty term is defined into the cost function as depicted in equation \eqref{eq:cost_function Ridge}.
+%
+\begin{equation}\label{eq:cost_function Ridge}
+    C(X,\beta) =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda \beta^T \beta
+\end{equation}
+%
+\noindent If we take the derivative of the cost function $\frac{\partial C(X, \beta)}{\partial \beta}$ and 
+solve the equation when the derivative is zero, we then obtain the equation for the optimal $\beta$:
+\begin{equation}\label{eq:beta_ridge}
+    \beta = (\textbf{X}^T \textbf{X} + \lambda \textbf{I})^{-1}\textbf{X}^T \textbf{y} 
+\end{equation}
+This extra term $\lambda \textbf{I}$ helps controlling the size of the coefficients. If $\lambda$ is small, then the impact of the penalty term is minimal, resulting in coefficients similar to those obtained through OLS. On the other hand, larger values of $\lambda$ lead to a more significant impact from the penalty term, resulting in smaller coefficient values.
+
+\subsubsection{LASSO}
+\noindent Least Absolute Shrinkage and Selection Operator (LASSO) is a shrinkage method similar to Ridge Regression. Both methods work towards minimizing the residual sum of squares while simultaneously incorporating a penalty term. The primary distinction between these regression techniques lies in the way the penalty term is defined into the cost function.
+
+\noindent In LASSO regression, the norm-2 vector $\sum_{i} \boldsymbol{\beta_i^2}$ , which is employed in Ridge Regression, is replaced by the norm-1 vector $\sum_{i} 
+|\boldsymbol{\beta_i}|$, leading to a nonlinear solution of $y_i$ \cite{SpringerCh3}.
+
+\noindent The cost function for LASSO is shown under in equation \eqref{eq:cost_function_Lasso}. 
+%
+\begin{equation}\label{eq:cost_function_Lasso}
+    C(X,\beta)_\text{Lasso} =  \left\lbrace ( \textbf{y} - \textbf{X}\beta )^T (\textbf{y} - \textbf{X}\beta)\right\rbrace + \lambda||\boldsymbol{\beta}||_1  
+\end{equation}
+%
+\noindent where $||\boldsymbol{\beta}||_1 = \sum_{i} |\boldsymbol{\beta_i}|$ which is found by taking the derivative with respect to $\boldsymbol{\beta}$ \cite{SpringerCh3}, 
+%
+\begin{equation}\label{eq:optimal_lasso}
+    \mathbf{X}^T\mathbf{X}\boldsymbol{\beta} + \lambda sgn(\boldsymbol{\beta}) = 2\mathbf{X}^T\boldsymbol{y} 
+\end{equation}
+%
+\noindent LASSO does not yield a closed-form expression due to a non linear solution, necessitating a numerical approach for its determination. 
+This method is essential in regression analysis because it carefully balance precision and clarity by penalizing the absolute size of regression coefficients \cite{Wessel}.
+
+\subsection{Model evaluation methods}
+\noindent Model evaluation methods assess the performance and effectiveness of a regression model. These evaluations help gauge the accuracy, goodness-of-fit and general capabilities of the models. Common methods of evaluation include calculating mean squared error (MSE), $R^2$-Score and Bias-variance trade off.
+%
+\subsubsection{Mean Square Error}
+\noindent Mean Squared Error, abbreviated MSE, is a commonly used risk metric that corresponds to the expected value of the squared (quadratic) error \cite{Week34}. It is defined as 
+%
+\begin{equation}\label{eq:MSE} 
+ MSE(\boldsymbol{y},\tilde{\boldsymbol{y}}) = \frac{1}{n} \sum_{i=0}^{n-1}(y_i \tilde{y}_i)^2
+\end{equation}
+%
+\noindent MSE measures the average of the squared differences between predicted values and actual outcomes. Therefore, the smaller the value, the better the fit between the predictions and reality. Since the MSE value comes from the square of the errors between the actual values and the predicted values, it cannot be negative. A perfect fit between the predictions and reality would yield an MSE value equal to zero \cite{Week34}. A disadvantage with MSE is that it's not scaled. Outliers will thus contribute the same amount as any other point, which can lead to an skewed MSE value. 
+
+\subsubsection{$R^2$-Score}
+\noindent The $R^2$-score function is a popular error metric that computes the coefficient of determination, which indicates how
+accurately a model can predict future samples. The score typically ranges from 0 to 1, but it can also be negative. A score of 1 indicates
+a perfect fit, while a negative value indicates an inadequate model. A constant model that always predicts the expected value of the target
+variable, regardless of the input features, would receive an $R^2$-score of 0 \cite{Week34}. The $R^2$-score is defined in \eqref{eqR2}
+%
+\begin{equation}\label{eqR2} 
+R^2(\boldsymbol{y}, \tilde{\boldsymbol{y}}) = 1 - \frac{\sum_{i=0}^{n - 1} (y_i - \tilde{y}_i)^2}{\sum_{i=0}^{n - 1} (y_i - \bar{y})^2}
+\end{equation}
+%
+\noindent where we have defined the mean value of $\boldsymbol{y}$ as $\bar{y} =  \frac{1}{n} \sum_{i=0}^{n - 1} y_i$.
+
+\subsubsection{Bias-variance tradeoff}
+\noindent OLS relies on assumptions about the data. We can assume a normal distribution of the output data with mean, given by the expectation value, and variance. These properties come into play when analyzing the bias-variance trade-off of our models. For OLS we need 
+%
+\begin{align}
+&\mathbb{E}_{OLS}(y_i) = \textbf{X}{i,*} \beta \\
+&\mathbb{E}_{OLS}(\beta) = \beta \\
+&\mathbb{V}_{OLS}(y_i) = \sigma^2 \\
+&\mathbb{V}_{OLS}(\hat{\beta}) = \sigma^2 (\textbf{X}^T \textbf{X})^{-1}
+\end{align}
+\noindent Refer to \ref{sec:appendix_a} for derivation of the expressions. To assess the accuracy of our Ridge model, we need
+%
+\begin{align}
+    & \mathbb{E}(\beta_{Ridge}) = (X^T X + \lambda I )^{-1}(X^T X)\beta\\
+    & \mathbb{V}(\beta_{Ridge}) = \sigma^2[X^T X + \lambda I]^{-1} X^T X \{[X^T X + \lambda I]^{-1}\}^T
+\end{align}
+%
+Derivation of expression for both the optimal $\beta$ and variance can be found in the appendix \ref{sec:appendix_b}. The Bias-variance trade-off is a measurement of how well a model fit the real data. We can use the expression for expected value of the mean square error as a trade-off, using equation the equation in \ref{sec:appendix_b} for a continuous function
+\begin{align}\label{eq:trade_off}
+    \mathbb{E}((\boldsymbol{y} - \boldsymbol{\tilde{y}})^{2}) &= \mathbb{E}((f(\boldsymbol{x}) - \mathbb{E}(\boldsymbol{\tilde{y}}))^{2}) + \mathbb{V}(\boldsymbol{\tilde{y}}) + \sigma^{2}
+\end{align}
+%
+The bias let us know if the model complexity allows us to describe the data, and that error is not introduced as a result of simplification. The variance let us know our model predictions vary between different data set. The ideal model has both low bias and low variance.
+
+\subsection{Resampling techniques}
+\noindent The main limitation in machine learning is the size of the data sets available to train the models. In some cases experiments are both expensive and time consuming, yet they result in  a small amount of data. Additionally, there are also situations where its not possible to generate new data with experiments. In these cases it is necessary to have methods where we can generate data sets with the same properties as our original data set. Bootstrap and cross validation are two such method, where we use the data available to generate data sets.
+%
+\subsubsection{Bootstrap} 
+\noindent The bootstrap method is a re-sampling procedure, which generate several sample data sets from the original data set by random sampling with replacement \cite{PSU}. That is, if we have a data set D with n data points, the elements can be represented as
+%
+\begin{align}
+    D = {d_1, d_2, d_3, d_4, \dots, d_n}
+\end{align}
+If we apply the bootstrap method on the data set, a sample output $D^{*}$ can be represented as
+%
+\begin{align}
+    D^{*} = {d_3, d_n, d_4, d_4 , \dots, d_2}
+\end{align}
+Since we are sampling the data using replacement, one observation can appear multiple times in the new data set. If we re-sample several data points and calculate the mean value of the resulting data set
+\begin{align}
+    d_{new} = \frac{1}{k}(d_1, \dots d_k)
+\end{align}
+we have a method of producing "new" data sets from a limited number of data points, to train our model with. We can calculate the mean and standard deviation of each data set to evaluate the model statistically \cite{MLM}.
+%
+One important advantage of the bootstrap method is that the data can be split in to 
+test and train before we re-sample the data, which means the test data can be kept separate from the training model. When we test the model, the data will be unseen and give an indication of how well the model perform on real data. 
+
+\noindent When we generate a new data set we draw samples from the same training data, and calculate the mean square error of each prediction. The initial distribution of our data is not known, however, when the sample size is large the mean square error will follow a normal distribution. The Central Limit theorem \cite{JAY2021CLT} states that for a large number of samples the law of large numbers \cite{JAY2021LLN} ensures the value of the mean converges toward the sample mean. The mean square error of our models prediction will follow a normal distribution, and will be independently distributed.
+
+\subsubsection{Cross validation}
+\noindent Cross validation (CV), specifically k-fold cross validation, is a technique designed to assess how well a model will generalize to an independent data set. Unlike the bootstrap method, which samples with replacement, CV partitions the original data set into \(k\) distinct subsets or "folds". One of these folds is kept as the test set, while the remaining \(k-1\) folds are used for training the model. This process is repeated \(k\) times, each time with a different fold reserved as the test set and the remaining folds as the training set. Given a data set \(D\) with \(n\) data points represented as
+%
+\begin{align}
+    D = \{d_1, d_2, d_3, \dots, d_n\}
+\end{align}
+For \(k=5\), an example partition can be given by
+\begin{align*}
+    \text{Fold 1} &= \{d_1, d_2, \dots, d_{\frac{n}{5}}\} \\
+    \text{Fold 2} &= \{d_{\frac{n}{5}+1}, d_{\frac{n}{5}+2}, \dots, d_{2 \times \frac{n}{5}}\} \\
+    &\vdots \\
+    \text{Fold 5} &= \{d_{4 \times \frac{n}{5}+1}, d_{4 \times \frac{n}{5}+2}, \dots, d_n\}
+\end{align*}
+In each iteration, one of these folds is reserved for testing and the others for training, cycling through until each fold has been the test set once. The model's performance is then averaged over the \(k\) test sets to produce a single estimation. The advantage of CV is its ability to utilize the entire data set for both training and testing, which can be very helpful when data is limited. By averaging over multiple trials, CV reduces the variance associated with a single random train-test split, providing a more robust measure of model performance. However, CV can be computationally intensive, especially for large \(k\) values or large data sets. Also, unlike the bootstrap method where test data is entirely separate from training, there's an overlap in the training data across folds in CV. This means that CV may sometimes be overly optimistic about a model's performance.
+In the context of our study, CV aids in parameter tuning, especially for models like Ridge and LASSO where the regularization strength is crucial.
